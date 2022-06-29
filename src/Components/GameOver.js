@@ -55,23 +55,46 @@ export default function GameOver(props) {
         }   
         console.log(message);
         navigator.clipboard.writeText(message);
+        window.alert("Result shared to clipboard!");
     }
 
     return (
     <>
         <div className="logo-container"></div>
         <div className="winner-outer-container">
-            <div className="winner-container" id={result+"-winner-container"} onMouseEnter={()=>{setHideWinner("none"); setShowShare("flex")}} onMouseLeave={()=>{setHideWinner("flex"); setShowShare("none")}}>
-                <div className="winner-text-container" style={{display: hideWinner}}>
-                    <h2 className="winner-text">
-                        {result=="draw"?"It's a draw":result+" wins"}
-                    </h2>
-                </div>
-                <div className="share-container" style={{display: showShare}} onClick={()=>{createEmoji();}}>
+            <div 
+                className="winner-container" 
+                id={result+"-winner-container"} 
+                onMouseEnter={()=>{setHideWinner("none"); setShowShare("flex")}} 
+                onMouseLeave={()=>{setHideWinner("flex"); setShowShare("none")}}
+                onClick={()=>{
+                    console.log("hello");
+                    createEmoji();
+                }}
+            >
+                    <div 
+                        className="winner-text-container" 
+                        style={{display: hideWinner}}
+                    >
+                            <h2 
+                                className="winner-text">
+                                    {result=="draw"?"It's a draw":result+" wins"}
+                            </h2>
+                    </div>
+                    <div 
+                        className="share-container" 
+                        style={{display: showShare}} 
+                    >
                 </div>
             </div>
         </div>
-        <button className="grid-button" id={props.gridSize==4?"four-button":"eight-button"} onClick={()=>{window.location.reload(false)}}>Go Again</button>
+        <button 
+            className="grid-button" 
+            id={props.gridSize==4?"four-button":"eight-button"} 
+            onClick={()=>{window.location.reload(false)}}
+        >
+            Go Again
+        </button>
     </>
   )
 }

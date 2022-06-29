@@ -4,8 +4,8 @@ import react, {useState, useEffect} from 'react';
 import "./style.css";
 import Dot from './Components/Dot';
 import Grid from './Components/Grid';
-import Header from './Components/Header';
 import GameOver from './Components/GameOver';
+import Header from './Components/Header';
 // import {io} from "socket.io-client";
 
 // const socket = io('http://localhost:4000');
@@ -45,18 +45,21 @@ export default function Game(props) {
     }
   })();
 
-  useEffect(()=>{
+  function updateMap(position){
     setMap(elMap.set(position, "clicked"));
-  }, [turn]);
+  }
 
   function elementCheck(id, compFlag, elRef){
     // socket.emit("turn", turn, props.roomId);
     position = calcPosition(id);
+    updateMap(position);
+    // console.log(position);
     if(!compFlag){
-      // socket.on("set-turn", turn=>{
-        setTurnFunc();
+      // socket.on("set-turn", turn=>{  
+      setTurnFunc();
       // });
     }
+    // console.log(elMap);
     // socket.emit("elMap-update")
     if(id.charAt(0) == "h"){
       checkVerticalBoxes(id, position);
@@ -497,15 +500,6 @@ export default function Game(props) {
             boxMap={boxMap} 
             vsComp={props.vsComp} 
           />
-          {/* <Grid 
-            gridSize={props.gridSize} 
-            func={elementCheck} 
-            turn={turn} 
-            map={elMap} 
-            boxMap={boxMap} 
-            vsComp={props.vsComp} 
-            compFunc={compFunc}
-          /> */}
         </div>
         <div className={!gameOver?"hide-game-over":"show-game-over"}>
           <GameOver redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap}/>

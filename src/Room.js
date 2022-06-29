@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import "./style.css"
 import {io} from "socket.io-client"
 import Game from "./Game"
+import Header from './Components/Header';
 
 const socket = io('http://localhost:4000');
 
@@ -15,9 +16,10 @@ export default function (props) {
     })
         return (
             <>
-        {joined?
+            <Header gridSize={props.gridSize}/>
+            {joined?
             <Game gridSize={props.gridSize} roomId={roomId}/>:
-        !shared?<div className="rooms-main-container">
+            !shared?<div className="rooms-main-container">
             <div className="create-room-container">
                 <button className="create-room" onClick={()=>{window.alert("Room ID copied to clipboard."); setShared(true); navigator.clipboard.writeText(socket.id)}}></button>
             </div>
