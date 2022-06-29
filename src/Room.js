@@ -1,34 +1,38 @@
 import React, {useState} from 'react';
 import "./style.css"
-import {io} from "socket.io-client"
+// import {io} from "socket.io-client"
 import Game from "./Game"
 
-const socket = io('http://localhost:4000');
+// const socket = io('http://localhost:4000');
 
 export default function (props) {
     const [roomId, setRoomId] = useState("");
     const [shared, setShared] = useState(false);
     const [joined, setJoined] = useState(false)
     
-    socket.on("start-game", ()=>{
-        setJoined(true);
-    })
+    // socket.on("start-game", ()=>{
+    //     setJoined(true);
+    // })
         return (
             <>
         {joined?
             <Game gridSize={props.gridSize} roomId={roomId}/>:
         !shared?<div className="rooms-main-container">
             <div className="create-room-container">
-                <button className="create-room" onClick={()=>{window.alert("Room ID copied to clipboard."); setShared(true); navigator.clipboard.writeText(socket.id)}}></button>
+                <button className="create-room" onClick={()=>{window.alert("Room ID copied to clipboard."); setShared(true); 
+                // navigator.clipboard.writeText(socket.id)
+            }}
+                ></button>
             </div>
             <div className="join-room-container">
                 <input className="room-input" type="text" onChange={(e)=>{
                     setRoomId(e.target.value);
                 }}/>
                 <button className="join-room"   
-                    onClick={()=>{
-                        socket.emit("joined-room", roomId)
-                    }}>
+                    // onClick={()=>{
+                    //     socket.emit("joined-room", roomId)
+                    // }}
+                >
                 Join
                 </button>
             </div>
