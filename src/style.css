@@ -1,0 +1,403 @@
+@font-face {
+    font-family: "ralewayMedium";
+    src: url(./Fonts/Raleway/Raleway-Medium.ttf);
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header-container{
+    position: absolute;
+    top: 3%;
+    left: 2%;
+    width: 70px;
+    height: 60px;
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    background: url(./Images/home-blank.png);
+    background-size: 45%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #ffac00;   
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+#header-container-four:hover{
+    background: url(./Images/home-filled-white.png);
+    background-size: 45%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #c5183b;   
+    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+}
+#header-container-eight:hover{
+    background: url(./Images/home-filled-white.png);
+    background-size: 45%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #3b919b;   
+    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+}
+.footer{
+    font-family: "ralewayMedium";
+    font-size: 12px;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+}
+.home-container{
+    background-color: white;
+    padding: 50px;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.100);
+}
+.logo-container{
+    width: 290px;
+    height: 100px;
+    background: url(./Images/Baksa.png);
+    background-size: cover;
+    margin-bottom: 10px;  
+}
+.rule{
+    margin-bottom: 40px;
+    font-family: "ralewayMedium";
+    font-size: 15px;
+    text-align: center;
+}
+.select-mode-statement{
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-family: "ralewayMedium";
+    font-size: 15px;
+    text-align: center;
+}
+.grid-buttons-container, .mode-buttons-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+.grid-button, .mode-button{
+    border: none;
+    width: 150px;
+    height: 50px;
+    font-family: -apple-system, BlinkMacSystemFont,
+                 'Segoe UI', Roboto, Oxygen, Ubuntu,
+                 Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background-color: #ffac00;
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.grid-button:hover, .mode-button:hover{
+    color: white;
+    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+}
+#four-button:hover, #custom-room-button:hover{
+    background-color: #c5183b;
+}
+#eight-button:hover, #vs-comp-button:hover{
+    background-color: #3b919b;
+}
+#four-button-chosen{
+    background-color: #c5183b;
+    color: white;
+    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+}
+#eight-button-chosen{
+    background-color: #3b919b;
+    color: white;
+    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+}
+/* #custom-room-button:hover{
+    background-color: black;
+    color: white;
+    transform: translate(5px, 5px);
+} */
+.center-container{
+    background-color: white;
+    padding: 50px;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.100);
+}
+.score-container{
+    display: flex;
+    margin-top: 40px;
+    margin-bottom: 0%;
+    width: 80%;
+    justify-content: space-around;
+    align-items: center;
+}
+.hide-score-container{
+    display: none;
+}
+.hide-grid{
+    display: none;
+}
+.hide-game-over{
+    display: none;
+}
+.show-game-over{
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.winner-outer-container{
+    width: 160px;
+    height: 60px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.winner-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 50px;
+    color: white;
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.winner-text-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.winner-text{
+    font-family: -apple-system, BlinkMacSystemFont,
+                 'Segoe UI', Roboto, Oxygen, Ubuntu,
+                 Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+}
+#red-winner-container{
+    background-color: #c5183b;
+}
+#blue-winner-container{
+    background-color: #3b919b;
+}
+#draw-winner-container{
+    background-color:rgb(0, 0, 0);
+    border: solid 1px white;
+}
+#draw-winner-container:hover{
+    border: none;
+}
+.winner-container:hover{
+    background: url(./Images/share.png);
+    background-size: 15%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: black;
+    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+}
+.score{
+    margin: 0;
+    font-size: 20px;
+    min-width: 100px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+#score-red{
+    color: #c5183b;
+}
+#score-blue{
+    color: #3b919b;
+}
+#turn-score-red{
+    /* padding: 5px 15px 15px 5px; */
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+    background-color: #c5183b;
+    color: white;
+}
+#turn-score-blue{
+    /* padding: 5px 15px 15px 5px; */
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+    background-color: #3b919b;
+    color: white;
+}
+
+.horizontal-bar-container, .vertical-bar-container{
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    justify-content: space-between;
+}
+.dot-i, .dot-ui{
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #ffac00;
+}
+.horizontal-bar-i, .horizontal-bar-ui{
+    display: inline-block;
+    width: 60px;
+    height: 8px;
+    background-color: #0000006d;
+}
+.vertical-bar-i, .vertical-bar-ui{
+    display: inline-block;
+    width: 8px;
+    height: 60px;
+    background-color: #0000006d;
+}
+.box-i, .box-ui{
+    width: 60px;
+}
+.big-grid-dot-i, .big-grid-dot-ui{
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #ffac00;
+}
+.big-grid-horizontal-bar-i, .big-grid-horizontal-bar-ui{
+    display: inline-block;
+    width: 50px;
+    height: 6px;
+    background-color: #0000006d;
+}
+.big-grid-vertical-bar-i, .big-grid-vertical-bar-ui{
+    display: inline-block;
+    width: 6px;
+    height: 50px;
+    background-color: #0000006d;
+}
+.big-grid-box-i, .big-grid-box-ui{
+    width: 50px;
+}
+.horizontal-bar-i:hover, .vertical-bar-i:hover{
+    background-color: black;
+    cursor: pointer;
+}
+.big-grid-horizontal-bar-i:hover, .big-grid-vertical-bar-i:hover{
+    background-color: black;
+    cursor: pointer;
+}
+
+
+/* Rooms Screen 1 */
+.rooms-main-container{
+    background-color: white;
+    padding: 50px;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.100);
+}
+.create-room-container{
+    width: fit-content;
+    height: fit-content;   
+    margin-bottom: 50px;
+}
+.join-room-container{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.room-input{
+    border: 5px solid black;
+    width: fit-content;
+    height: 40px;
+    padding: 0;
+    color: black;
+    font-family: -apple-system, BlinkMacSystemFont,
+                'Segoe UI', Roboto, Oxygen, Ubuntu,
+                Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: 20px;
+    cursor: text;
+    margin-right: 10px;
+    transition: all 0.1s ease;
+}
+.room-input:hover{
+    background-color: #ffac00;
+}
+.create-room, .join-room{
+    border: none;
+    width: 150px;
+    height: 50px;
+    font-family: -apple-system, BlinkMacSystemFont,
+                 'Segoe UI', Roboto, Oxygen, Ubuntu,
+                 Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background-color: #ffac00;
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.create-room::after{
+    content: "Create Room";
+}
+.create-room:hover, .join-room:hover{
+    transform: translate(5px, 5px);
+    box-shadow: 0px 0px 0px 2px black;
+    color: white;
+}
+.create-room:hover{
+    background-color: #c5183b;
+}
+.create-room:hover::after{
+    content: "Share ID";
+}
+.join-room:hover{
+    background-color: #3b919b;
+}
+.room-id-statement{
+    margin-top: 40px;
+    margin-bottom: 0;
+    font-family: "ralewayMedium";
+    font-size: 15px;
+    text-align: center;
+}
+.waiting-icon-container{
+    width: 100px;
+    height: 100px;
+    background: url(./Images/icons8-waiting-room-96.png);
+}
