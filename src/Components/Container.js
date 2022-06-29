@@ -24,7 +24,7 @@ export default function Container(props) {
                                 boxMap={props.boxMap}
                                 gridSize={props.gridSize}
                                 vsComp={props.vsComp}
-                                // compFunc={props.compFunc}
+                                compFunc={props.compFunc}
                             />)
             }   
         }
@@ -41,7 +41,7 @@ export default function Container(props) {
                                 boxMap={props.boxMap}
                                 gridSize={props.gridSize}
                                 vsComp={props.vsComp}
-                                // compFunc={props.compFunc}
+                                compFunc={props.compFunc}
                             />)
             }
         }

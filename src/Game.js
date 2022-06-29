@@ -6,9 +6,9 @@ import Dot from './Components/Dot';
 import Grid from './Components/Grid';
 import Header from './Components/Header';
 import GameOver from './Components/GameOver';
-import {io} from "socket.io-client";
+// import {io} from "socket.io-client";
 
-const socket = io('http://localhost:4000');
+// const socket = io('http://localhost:4000');
 
 export default function Game(props) {
   var i, j;
@@ -50,14 +50,14 @@ export default function Game(props) {
   }, [turn]);
 
   function elementCheck(id, compFlag, elRef){
-    socket.emit("turn", turn, props.roomId);
+    // socket.emit("turn", turn, props.roomId);
     position = calcPosition(id);
     if(!compFlag){
-      socket.on("set-turn", turn=>{
+      // socket.on("set-turn", turn=>{
         setTurnFunc();
-      });
+      // });
     }
-    socket.emit("elMap-update")
+    // socket.emit("elMap-update")
     if(id.charAt(0) == "h"){
       checkVerticalBoxes(id, position);
     }
@@ -97,7 +97,7 @@ export default function Game(props) {
   }
 
   function checkVerticalBoxes(id){
-    // console.log(id);
+    console.log(id);
     var id1, id2, id3, id4, id5, id6;
     var pos1, pos2, pos3, pos4, pos5, pos6;
     var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
@@ -116,7 +116,7 @@ export default function Game(props) {
     
     var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
     if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-      //   console.log("upper and lower boxes filled");
+        console.log("upper and lower boxes filled");
       setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
       stayTurn();
@@ -125,14 +125,14 @@ export default function Game(props) {
       updateTotal();
     }
     else if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked" && elMap.get(pos4)=="clicked"){
-      //   console.log("upper box filled");
+        console.log("upper box filled");
       setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
       stayTurn();
       updateScore(("b-"+(n-1)+"-"+m));
       updateTotal();
     }
     else if(elMap.get(pos2)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-      //   console.log("lower box filled");
+        console.log("lower box filled");
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
       stayTurn();
       updateScore(("b-"+n+"-"+m));
@@ -141,7 +141,7 @@ export default function Game(props) {
   }
   
   function checkHorizontalBoxes(id){
-    // console.log(id);
+    console.log(id);
     var id1, id2, id3, id4, id5, id6;
     var pos1, pos2, pos3, pos4, pos5, pos6;
     var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
@@ -160,7 +160,7 @@ export default function Game(props) {
 
     var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
     if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-    //   console.log("left and right boxes filled");
+      console.log("left and right boxes filled");
       setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
       stayTurn();
@@ -169,14 +169,14 @@ export default function Game(props) {
       updateTotal();
     }
     else if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked"){
-    //   console.log("left box filled");
+      console.log("left box filled");
       setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
       stayTurn();
       updateScore(("b-"+n+"-"+(m-1)));
       updateTotal();
     }
     else if(elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-    //   console.log("right box filled");
+      console.log("right box filled");
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
       stayTurn();
       updateScore(("b-"+n+"-"+m));
@@ -211,225 +211,225 @@ export default function Game(props) {
     }    
   }
   
-  function compCheckVerticalBoxes(id, elRef){
-    // console.log(id);
-    var id1, id2, id3, id4, id5, id6;
-    var pos1, pos2, pos3, pos4, pos5, pos6;
-    var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
-    id1="h-"+(n-1)+"-"+m;
-    id2="h-"+(n+1)+"-"+m;
-    id3="v-"+(n-1)+"-"+m;
-    id4="v-"+(n-1)+"-"+(m+1);
-    id5="v-"+(n)+"-"+m;
-    id6="v-"+(n)+"-"+(m+1);
-    pos1=calcPosition(id1);
-    pos2=calcPosition(id2);
-    pos3=calcPosition(id3);
-    pos4=calcPosition(id4);
-    pos5=calcPosition(id5);
-    pos6=calcPosition(id6);
+  // function compCheckVerticalBoxes(id, elRef){
+  //   // console.log(id);
+  //   var id1, id2, id3, id4, id5, id6;
+  //   var pos1, pos2, pos3, pos4, pos5, pos6;
+  //   var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
+  //   id1="h-"+(n-1)+"-"+m;
+  //   id2="h-"+(n+1)+"-"+m;
+  //   id3="v-"+(n-1)+"-"+m;
+  //   id4="v-"+(n-1)+"-"+(m+1);
+  //   id5="v-"+(n)+"-"+m;
+  //   id6="v-"+(n)+"-"+(m+1);
+  //   pos1=calcPosition(id1);
+  //   pos2=calcPosition(id2);
+  //   pos3=calcPosition(id3);
+  //   pos4=calcPosition(id4);
+  //   pos5=calcPosition(id5);
+  //   pos6=calcPosition(id6);
     
-    var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
+  //   var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
 
-    if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-      compBoxFlag = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-      setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
-      setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
-      stayTurn();
-      updateScore(("b-"+(n-1)+"-"+m));
-      updateScore(("b-"+n+"-"+m));
-      updateTotal();
-    }
-    else if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked" && elMap.get(pos4)=="clicked"){
-      compBoxFlag = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-      setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
-      stayTurn();
-      updateScore(("b-"+(n-1)+"-"+m));
-      updateTotal();
-    }
-    else if(elMap.get(pos2)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-      compBoxFlag = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-      setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
-      stayTurn();
-      updateScore(("b-"+n+"-"+m));
-      updateTotal();
-    }
-  }
+  //   if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
+  //     compBoxFlag = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
+  //     setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
+  //     stayTurn();
+  //     updateScore(("b-"+(n-1)+"-"+m));
+  //     updateScore(("b-"+n+"-"+m));
+  //     updateTotal();
+  //   }
+  //   else if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked" && elMap.get(pos4)=="clicked"){
+  //     compBoxFlag = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
+  //     stayTurn();
+  //     updateScore(("b-"+(n-1)+"-"+m));
+  //     updateTotal();
+  //   }
+  //   else if(elMap.get(pos2)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
+  //     compBoxFlag = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
+  //     stayTurn();
+  //     updateScore(("b-"+n+"-"+m));
+  //     updateTotal();
+  //   }
+  // }
 
-  function compCheckHorizontalBoxes(id, elRef){
-    // console.log(id);
-    var id1, id2, id3, id4, id5, id6;
-    var pos1, pos2, pos3, pos4, pos5, pos6;
-    var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
-    id1="h-"+(n)+"-"+(m-1);
-    id2="v-"+(n)+"-"+(m-1);
-    id3="h-"+(n+1)+"-"+(m-1);
-    id4="h-"+(n)+"-"+(m);
-    id5="v-"+(n)+"-"+(m+1);
-    id6="h-"+(n+1)+"-"+(m);
-    pos1=calcPosition(id1);
-    pos2=calcPosition(id2);
-    pos3=calcPosition(id3);
-    pos4=calcPosition(id4);
-    pos5=calcPosition(id5);
-    pos6=calcPosition(id6);
+  // function compCheckHorizontalBoxes(id, elRef){
+  //   // console.log(id);
+  //   var id1, id2, id3, id4, id5, id6;
+  //   var pos1, pos2, pos3, pos4, pos5, pos6;
+  //   var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
+  //   id1="h-"+(n)+"-"+(m-1);
+  //   id2="v-"+(n)+"-"+(m-1);
+  //   id3="h-"+(n+1)+"-"+(m-1);
+  //   id4="h-"+(n)+"-"+(m);
+  //   id5="v-"+(n)+"-"+(m+1);
+  //   id6="h-"+(n+1)+"-"+(m);
+  //   pos1=calcPosition(id1);
+  //   pos2=calcPosition(id2);
+  //   pos3=calcPosition(id3);
+  //   pos4=calcPosition(id4);
+  //   pos5=calcPosition(id5);
+  //   pos6=calcPosition(id6);
 
-    var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
+  //   var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
 
-    if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-      compBoxFlag = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-      setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
-      setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
-      stayTurn();
-      updateScore(("b-"+n+"-"+(m-1)));
-      updateScore(("b-"+n+"-"+m));
-      updateTotal();
-    }
-    else if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked"){
-      compBoxFlag = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-      setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
-      stayTurn();
-      updateScore(("b-"+n+"-"+(m-1)));
-      updateTotal();
-    }
-    else if(elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-      compBoxFlag = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-      setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
-      stayTurn();
-      updateScore(("b-"+n+"-"+m));
-      updateTotal();
-    }
-  }
+  //   if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
+  //     compBoxFlag = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
+  //     setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
+  //     stayTurn();
+  //     updateScore(("b-"+n+"-"+(m-1)));
+  //     updateScore(("b-"+n+"-"+m));
+  //     updateTotal();
+  //   }
+  //   else if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked"){
+  //     compBoxFlag = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
+  //     stayTurn();
+  //     updateScore(("b-"+n+"-"+(m-1)));
+  //     updateTotal();
+  //   }
+  //   else if(elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
+  //     compBoxFlag = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
+  //     stayTurn();
+  //     updateScore(("b-"+n+"-"+m));
+  //     updateTotal();
+  //   }
+  // }
 
-  function compCheck1lineHorizontal(id, elRef){
-    console.log(id);
-    var id1, id2, id3, id4, id5, id6;
-    var pos1, pos2, pos3, pos4, pos5, pos6;
-    var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
-    id1="h-"+(n-1)+"-"+m;
-    id2="h-"+(n+1)+"-"+m;
-    id3="v-"+(n-1)+"-"+m;
-    id4="v-"+(n-1)+"-"+(m+1);
-    id5="v-"+(n)+"-"+m;
-    id6="v-"+(n)+"-"+(m+1);
-    pos1=calcPosition(id1);
-    pos2=calcPosition(id2);
-    pos3=calcPosition(id3);
-    pos4=calcPosition(id4);
-    pos5=calcPosition(id5);
-    pos6=calcPosition(id6);
+  // function compCheck1lineHorizontal(id, elRef){
+  //   console.log(id);
+  //   var id1, id2, id3, id4, id5, id6;
+  //   var pos1, pos2, pos3, pos4, pos5, pos6;
+  //   var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
+  //   id1="h-"+(n-1)+"-"+m;
+  //   id2="h-"+(n+1)+"-"+m;
+  //   id3="v-"+(n-1)+"-"+m;
+  //   id4="v-"+(n-1)+"-"+(m+1);
+  //   id5="v-"+(n)+"-"+m;
+  //   id6="v-"+(n)+"-"+(m+1);
+  //   pos1=calcPosition(id1);
+  //   pos2=calcPosition(id2);
+  //   pos3=calcPosition(id3);
+  //   pos4=calcPosition(id4);
+  //   pos5=calcPosition(id5);
+  //   pos6=calcPosition(id6);
 
-    if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    else if(elMap.get(pos1)=="clicked" && elMap.get(pos4)== "clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    if(elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    else if(elMap.get(pos2)== "clicked" && elMap.get(pos5)=="clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    else if(elMap.get(pos2)== "clicked" && elMap.get(pos6)=="clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    else if(elMap.get(pos5)== "clicked" && elMap.get(pos6)=="clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-  }
+  //   if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   else if(elMap.get(pos1)=="clicked" && elMap.get(pos4)== "clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   if(elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   else if(elMap.get(pos2)== "clicked" && elMap.get(pos5)=="clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   else if(elMap.get(pos2)== "clicked" && elMap.get(pos6)=="clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   else if(elMap.get(pos5)== "clicked" && elMap.get(pos6)=="clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  // }
 
-  function compCheck1lineVertical(id, elRef){
-    console.log(id);
-    var id1, id2, id3, id4, id5, id6;
-    var pos1, pos2, pos3, pos4, pos5, pos6;
-    var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
-    id1="h-"+(n)+"-"+(m-1);
-    id2="v-"+(n)+"-"+(m-1);
-    id3="h-"+(n+1)+"-"+(m-1);
-    id4="h-"+(n)+"-"+(m);
-    id5="v-"+(n)+"-"+(m+1);
-    id6="h-"+(n+1)+"-"+(m);
-    pos1=calcPosition(id1);
-    pos2=calcPosition(id2);
-    pos3=calcPosition(id3);
-    pos4=calcPosition(id4);
-    pos5=calcPosition(id5);
-    pos6=calcPosition(id6);
+  // function compCheck1lineVertical(id, elRef){
+  //   console.log(id);
+  //   var id1, id2, id3, id4, id5, id6;
+  //   var pos1, pos2, pos3, pos4, pos5, pos6;
+  //   var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
+  //   id1="h-"+(n)+"-"+(m-1);
+  //   id2="v-"+(n)+"-"+(m-1);
+  //   id3="h-"+(n+1)+"-"+(m-1);
+  //   id4="h-"+(n)+"-"+(m);
+  //   id5="v-"+(n)+"-"+(m+1);
+  //   id6="h-"+(n+1)+"-"+(m);
+  //   pos1=calcPosition(id1);
+  //   pos2=calcPosition(id2);
+  //   pos3=calcPosition(id3);
+  //   pos4=calcPosition(id4);
+  //   pos5=calcPosition(id5);
+  //   pos6=calcPosition(id6);
 
-    if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    else if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    if(elMap.get(pos2)=="clicked" && elMap.get(pos3)== "clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    else if(elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    else if(elMap.get(pos4)== "clicked" && elMap.get(pos6)=="clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-    else if(elMap.get(pos5)== "clicked" && elMap.get(pos6)=="clicked"){
-      comp2line = true;
-      compTempPos = calcPosition(id);
-      elMap.set(compTempPos, "clicked");
-      elRef.current.style.backgroundColor = "#3b919b";
-    }
-  }
+  //   if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   else if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   if(elMap.get(pos2)=="clicked" && elMap.get(pos3)== "clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   else if(elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   else if(elMap.get(pos4)== "clicked" && elMap.get(pos6)=="clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  //   else if(elMap.get(pos5)== "clicked" && elMap.get(pos6)=="clicked"){
+  //     comp2line = true;
+  //     compTempPos = calcPosition(id);
+  //     elMap.set(compTempPos, "clicked");
+  //     elRef.current.style.backgroundColor = "#3b919b";
+  //   }
+  // }
 
   // function compFunc(elRef){
   //   console.log("computer's turn");
@@ -486,12 +486,26 @@ export default function Game(props) {
   return (
     <>
     {console.log("current turn: "+turn)}
-    {console.log("i love you ")}
     <Header gridSize={props.gridSize}/>
       <div className="center-container">
         <div className={!gameOver?"show-grid":"hide-grid"}>
-          <Grid gridSize={props.gridSize} func={elementCheck} turn={turn} map={elMap} boxMap={boxMap} vsComp={props.vsComp} />
-          {/* <Grid gridSize={props.gridSize} func={elementCheck} turn={turn} map={elMap} boxMap={boxMap} vsComp={props.vsComp} compFunc={compFunc}/> */}
+          <Grid 
+            gridSize={props.gridSize}
+            func={elementCheck}  
+            turn={turn} 
+            map={elMap} 
+            boxMap={boxMap} 
+            vsComp={props.vsComp} 
+          />
+          {/* <Grid 
+            gridSize={props.gridSize} 
+            func={elementCheck} 
+            turn={turn} 
+            map={elMap} 
+            boxMap={boxMap} 
+            vsComp={props.vsComp} 
+            compFunc={compFunc}
+          /> */}
         </div>
         <div className={!gameOver?"hide-game-over":"show-game-over"}>
           <GameOver redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap}/>

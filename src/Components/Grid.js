@@ -20,7 +20,7 @@ export default function Grid(props) {
                                     boxMap={props.boxMap}
                                     gridSize={props.gridSize}
                                     vsComp={props.vsComp}
-                                    // compFunc={props.compFunc}
+                                    compFunc={props.compFunc}
                             />)
         }
     })()

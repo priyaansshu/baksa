@@ -37,16 +37,23 @@ function App() {
                           8X8
                       </button>
                   </div>
-                  <p className="select-mode-statement">Select a mode to start a {gridSize==4?"4X4":"8X8"} game</p>
+                  <p className="select-mode-statement">
+                    Select a mode to start a {gridSize==4?"4X4":"8X8"} game
+                  </p>
                   <div className="mode-buttons-container">
                     <Link to="/Room" style={{textDecoration: "none"}}>
-                      <button className="mode-button" id="custom-room-button">
-                        Room
+                      <button 
+                        className="mode-button" 
+                        id="custom-room-button">
+                          Room
                       </button>
                     </Link>
                     <Link to="/game" style={{textDecoration: "none"}}>
-                      <button className="mode-button" id="vs-comp-button" onClick={()=>{setVsComp(false)}}>
-                        Computer
+                      <button
+                        className="mode-button"
+                        id="vs-comp-button" 
+                        onClick={()=>{setVsComp(false)}}> 
+                          Computer
                       </button>
                     </Link>
                   </div>
