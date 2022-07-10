@@ -6,9 +6,9 @@ import Dot from './Components/Dot';
 import Grid from './Components/Grid';
 import GameOver from './Components/GameOver';
 import Header from './Components/Header';
-// import {io} from "socket.io-client";
+import {io} from "socket.io-client";
 
-// const socket = io('http://localhost:4000');
+const socket = io('http://localhost:4000');
 
 export default function Game(props) {
   var i, j;
@@ -17,14 +17,47 @@ export default function Game(props) {
   var compBoxFlag = false;
   var comp2line = false;
   const [elMap, setMap] = useState(new Map());
-  const [turn, setTurn] = useState("#c5183b");
-  const [mapFlag, setMapFlag] = useState(true);
-  const [boxFlag, setBoxFlag] = useState(true);
   const [boxMap, setBoxMap] = useState(new Map());
+  
+  const [mapFlag, setMapFlag] = useState(true); //used to make sure the map is initialised only once
+  const [boxFlag, setBoxFlag] = useState(true); //used to make sure the box map is initialised only once
+  
+  var red="#c5183b";
+  var blue="#3b919b";
+  const [turn, setTurn] = useState(red);
+  const assignedColor = props.playerRole==1?red:blue;
   const [redScore, setRedScore] = useState(0);
   const [blueScore, setBlueScore] = useState(0);
+
   const [gameOver, setGameOver] = useState(false);
   var position;
+  const [tempId, setTempId] = useState("");
+  const [tempColor, setTempColor] = useState("");
+  var t; // variable for temporarily handling id
+  var tempTurn; // variable for temporarily handling turn
+  var tempBoxColor="";
+
+  function updateMapWithServer(){
+    console.log(tempTurn=="#c5183b"?"red":"blue");
+    socket.emit("update", {turn: tempTurn, roomId: props.roomId, position: position, tempId: t, tempBoxColor: tempBoxColor});
+  }
+
+  useEffect(()=>{
+    socket.on("updated", (data)=>{
+      console.log("*******")
+      position = data.position;
+      tempBoxColor = data.tempBoxColor;
+      console.log(data.turn=="#c5183b"?"red":"blue");
+      updateLocalVariablesWithServerValues(data.tempId, data.turn);
+      elementCheckUtilityFunction(position, data.tempId);
+    });
+  }, [socket]);
+
+  function updateLocalVariablesWithServerValues(tempId, tempColor){
+    setTempId(tempId);
+    setTempColor(tempColor);
+    console.log("tempColor: "+tempColor);
+  }
 
   (function initMap(){
     if(mapFlag){
@@ -46,31 +79,32 @@ export default function Game(props) {
   })();
 
   function updateMap(position){
-    setMap(elMap.set(position, "clicked"));
+    if(elMap.get(position)!=="clicked"){
+      setMap(elMap.set(position, "clicked"));
+      console.log(elMap);
+    }
   }
 
-  function elementCheck(id, compFlag, elRef){
-    // socket.emit("turn", turn, props.roomId);
-    position = calcPosition(id);
+  function elementCheckUtilityFunction(position, id){
+    console.log("here");
     updateMap(position);
-    // console.log(position);
-    if(!compFlag){
-      // socket.on("set-turn", turn=>{  
-      setTurnFunc();
-      // });
-    }
-    // console.log(elMap);
-    // socket.emit("elMap-update")
+    setTurnFunc();
     if(id.charAt(0) == "h"){
-      checkVerticalBoxes(id, position);
+      checkVerticalBoxes(id);
     }
     else{
-      checkHorizontalBoxes(id, position);
+      checkHorizontalBoxes(id);
     }
+  }
 
-    // if(compFlag){
-    //   compFunc(elRef);
-    // }
+  function elementCheck(id){
+    console.log("*******")
+    t=id;
+    tempBoxColor=""
+    position = calcPosition(id);
+    elementCheckUtilityFunction(position, id);
+    tempTurn = turn;
+    updateMapWithServer();
   }
   
   function calcPosition(id){
@@ -92,15 +126,16 @@ export default function Game(props) {
   }
 
   function setTurnFunc(){
-    setTurn(turn=="#c5183b"?"#3b919b":"#c5183b");
+    setTurn(turn=>turn===red?blue:red);
+    console.log("In the setTurn function: "+turn);
   }
 
-  function stayTurn(){
-    setTurn(turn=="#c5183b"?"#c5183b":"#3b919b")
+  function stayTurn(boxColor){
+    setTurn(boxColor);
   }
 
   function checkVerticalBoxes(id){
-    console.log(id);
+    // console.log(id);
     var id1, id2, id3, id4, id5, id6;
     var pos1, pos2, pos3, pos4, pos5, pos6;
     var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
@@ -117,12 +152,20 @@ export default function Game(props) {
     pos5=calcPosition(id5);
     pos6=calcPosition(id6);
     
-    var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
+    // console.log(tempColor);
+    // var boxColor = tempColor===blue?red:blue;
+    if(tempBoxColor==""){
+      var boxColor = turn;
+    }
+    else{
+      var boxColor = tempBoxColor;
+    }
+
     if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
         console.log("upper and lower boxes filled");
       setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
-      stayTurn();
+      stayTurn(boxColor);
       updateScore(("b-"+(n-1)+"-"+m));
       updateScore(("b-"+n+"-"+m));
       updateTotal();
@@ -130,21 +173,24 @@ export default function Game(props) {
     else if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked" && elMap.get(pos4)=="clicked"){
         console.log("upper box filled");
       setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
-      stayTurn();
+      stayTurn(boxColor);
       updateScore(("b-"+(n-1)+"-"+m));
       updateTotal();
     }
     else if(elMap.get(pos2)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
         console.log("lower box filled");
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
-      stayTurn();
+      stayTurn(boxColor);
       updateScore(("b-"+n+"-"+m));
       updateTotal();
     }
+
+    console.log(boxMap);
+    tempBoxColor=boxColor;
   }
   
   function checkHorizontalBoxes(id){
-    console.log(id);
+    // console.log(id);
     var id1, id2, id3, id4, id5, id6;
     var pos1, pos2, pos3, pos4, pos5, pos6;
     var n = parseInt(id.charAt(2)), m = parseInt(id.charAt(4));
@@ -161,12 +207,20 @@ export default function Game(props) {
     pos5=calcPosition(id5);
     pos6=calcPosition(id6);
 
-    var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
+    // console.log(tempColor);
+    // var boxColor = tempColor===blue?red:blue;
+    if(tempBoxColor==""){
+      var boxColor = turn;
+    }
+    else{
+      var boxColor = tempBoxColor;
+    }
+
     if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
       console.log("left and right boxes filled");
       setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
-      stayTurn();
+      stayTurn(boxColor);
       updateScore(("b-"+n+"-"+(m-1)));
       updateScore(("b-"+n+"-"+m));
       updateTotal();
@@ -174,24 +228,26 @@ export default function Game(props) {
     else if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked"){
       console.log("left box filled");
       setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
-      stayTurn();
+      stayTurn(boxColor);
       updateScore(("b-"+n+"-"+(m-1)));
       updateTotal();
     }
     else if(elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
       console.log("right box filled");
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
-      stayTurn();
+      stayTurn(boxColor);
       updateScore(("b-"+n+"-"+m));
       updateTotal();
     }
+    console.log(boxMap);
+    tempBoxColor=boxColor;
   }
 
   function updateScore(tempBoxId){
-    if(boxMap.get(tempBoxId)=="#c5183b"){
+    if(boxMap.get(tempBoxId)==red){
       setRedScore(redScore=>redScore+1);
     }
-    else if(boxMap.get(tempBoxId)=="#3b919b"){
+    else if(boxMap.get(tempBoxId)==blue){
       setBlueScore(blueScore=>blueScore+1);
     }
   }
@@ -232,13 +288,13 @@ export default function Game(props) {
   //   pos5=calcPosition(id5);
   //   pos6=calcPosition(id6);
     
-  //   var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
+  //   var boxColor = turn==blue?blue:red;
 
   //   if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
   //     compBoxFlag = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //     setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
   //     setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
   //     stayTurn();
@@ -250,7 +306,7 @@ export default function Game(props) {
   //     compBoxFlag = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //     setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
   //     stayTurn();
   //     updateScore(("b-"+(n-1)+"-"+m));
@@ -260,7 +316,7 @@ export default function Game(props) {
   //     compBoxFlag = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //     setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
   //     stayTurn();
   //     updateScore(("b-"+n+"-"+m));
@@ -286,13 +342,13 @@ export default function Game(props) {
   //   pos5=calcPosition(id5);
   //   pos6=calcPosition(id6);
 
-  //   var boxColor = turn=="#3b919b"?"#3b919b":"#c5183b";
+  //   var boxColor = turn==blue?blue:red;
 
   //   if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
   //     compBoxFlag = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //     setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
   //     setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
   //     stayTurn();
@@ -304,7 +360,7 @@ export default function Game(props) {
   //     compBoxFlag = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //     setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
   //     stayTurn();
   //     updateScore(("b-"+n+"-"+(m-1)));
@@ -314,7 +370,7 @@ export default function Game(props) {
   //     compBoxFlag = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //     setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
   //     stayTurn();
   //     updateScore(("b-"+n+"-"+m));
@@ -344,37 +400,37 @@ export default function Game(props) {
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   else if(elMap.get(pos1)=="clicked" && elMap.get(pos4)== "clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   if(elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   else if(elMap.get(pos2)== "clicked" && elMap.get(pos5)=="clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   else if(elMap.get(pos2)== "clicked" && elMap.get(pos6)=="clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   else if(elMap.get(pos5)== "clicked" && elMap.get(pos6)=="clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   // }
 
@@ -400,37 +456,37 @@ export default function Game(props) {
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   else if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   if(elMap.get(pos2)=="clicked" && elMap.get(pos3)== "clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   else if(elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   else if(elMap.get(pos4)== "clicked" && elMap.get(pos6)=="clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   //   else if(elMap.get(pos5)== "clicked" && elMap.get(pos6)=="clicked"){
   //     comp2line = true;
   //     compTempPos = calcPosition(id);
   //     elMap.set(compTempPos, "clicked");
-  //     elRef.current.style.backgroundColor = "#3b919b";
+  //     elRef.current.style.backgroundColor = blue;
   //   }
   // }
 
@@ -472,13 +528,13 @@ export default function Game(props) {
   //             comp0line = true;
   //             compTempPos = calcPosition(compTempId1);
   //             elMap.set(compTempPos, "clicked");
-  //             elRef.current.style.backgroundColor = "#3b919b";
+  //             elRef.current.style.backgroundColor = blue;
   //           }
   //           if(elMap.get(calcPosition(compTempId2))!="clicked"){
   //             comp0line = true;
   //             compTempPos = calcPosition(compTempId2);
   //             elMap.set(compTempPos, "clicked");
-  //             elRef.current.style.backgroundColor = "#3b919b";
+  //             elRef.current.style.backgroundColor = blue;
   //           }
   //         }  
   //       }
@@ -488,10 +544,11 @@ export default function Game(props) {
   
   return (
     <>
-    {console.log("current turn: "+turn)}
+    {console.log(tempColor)}
     <Header gridSize={props.gridSize}/>
       <div className="center-container">
         <div className={!gameOver?"show-grid":"hide-grid"}>
+          {/* {console.log(tempColor)} */}
           <Grid 
             gridSize={props.gridSize}
             func={elementCheck}  
@@ -499,14 +556,21 @@ export default function Game(props) {
             map={elMap} 
             boxMap={boxMap} 
             vsComp={props.vsComp} 
+            tempColor={tempColor}
+            tempId={tempId}
+            assignedColor={assignedColor}
           />
         </div>
+        {/* <div className="uninteractable-board"
+            style={assignedColor==turn?{display:"none"}:{display:"block", backgroundColor:"blue", position:"relative", height:"100px", width: "100px", zIndex:"99"}}>
+        </div> */}
         <div className={!gameOver?"hide-game-over":"show-game-over"}>
           <GameOver redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap}/>
         </div>
+        {console.log(turn)}
         <div className={!gameOver?"score-container":"hide-score-container"}>
-          <h2 className="score" id={turn=="#c5183b"?"turn-score-red":"score-red"}>Red: {redScore}</h2>
-          <h2 className="score" id={turn=="#3b919b"?"turn-score-blue":"score-blue"}>Blue: {blueScore}</h2>
+          <h2 className="score" id={turn==red?"turn-score-red":"score-red"}>Red: {redScore}</h2>
+          <h2 className="score" id={turn==blue?"turn-score-blue":"score-blue"}>Blue: {blueScore}</h2>
         </div>
       </div>
     </>

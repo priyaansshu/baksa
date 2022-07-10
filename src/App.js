@@ -5,9 +5,9 @@ import "./style.css";
 import Game from './Game';
 import Room from './Room';
 import {Route, Link, Routes} from "react-router-dom";
-import {io} from "socket.io-client"
+// import {io} from "socket.io-client"
 
-const socket = io('http://localhost:4000');
+// const socket = io('http://localhost:4000');
 
 function App() {
   const [gridSize, setGridSize] = useState(4);

@@ -25,6 +25,9 @@ export default function Container(props) {
                                 gridSize={props.gridSize}
                                 vsComp={props.vsComp}
                                 compFunc={props.compFunc}
+                                tempColor={props.tempColor}
+                                tempId={props.tempId}
+                                assignedColor={props.assignedColor}
                             />)
             }   
         }
@@ -42,6 +45,9 @@ export default function Container(props) {
                                 gridSize={props.gridSize}
                                 vsComp={props.vsComp}
                                 compFunc={props.compFunc}
+                                tempColor={props.tempColor}
+                                tempId={props.tempId}
+                                assignedColor={props.assignedColor}
                             />)
             }
         }

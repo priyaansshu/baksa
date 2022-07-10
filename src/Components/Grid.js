@@ -21,6 +21,9 @@ export default function Grid(props) {
                                     gridSize={props.gridSize}
                                     vsComp={props.vsComp}
                                     compFunc={props.compFunc}
+                                    tempColor={props.tempColor}
+                                    tempId={props.tempId}
+                                    assignedColor={props.assignedColor}
                             />)
         }
     })()
