@@ -3,6 +3,6 @@ import "../style.css";
 
 export default function Footer() {
   return (
-    <div className="footer">© Priyanshu Modi</div>
+    <div className="footer"></div>
   )
 }

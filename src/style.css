@@ -9,6 +9,88 @@ body{
     justify-content: center;
     align-items: center;
 }
+.about-button{
+    position: absolute;
+    top: 3%;
+    left: 2%;
+    width: 70px;
+    height: 60px;
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    background: url(./Images/glasses.png);
+    background-size: 70%;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    /* animation: bgColor 1s linear infinite;
+    -webkit-animation: bgColor 1s linear infinite; */
+    animation-play-state: paused;
+    background-color: #ffac00;   
+    transition: transform 0.3s ease;
+}
+.about-button:hover{
+    background: url(./Images/glasses2.png);
+    background-color: rgb(226, 17, 226);
+    background-size: 90%;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* animation-play-state: running; */
+    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+}
+.about-button-clicked{
+    position: absolute;
+    top: 3%;
+    left: 2%;
+    width: 70px;
+    height: 60px;
+    cursor: pointer;
+    background: url(./Images/glasses2.png);
+    background-color: rgb(226, 17, 226);
+    background-size: 90%;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    /* animation-play-state: running; */
+    transition: transform 0.3s ease;
+}
+.about-button-clicked:hover{
+    background: url(./Images/glasses.png);
+    background-color: #ffac00;   
+    background-size: 70%;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* animation-play-state: running; */
+    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+    transform: translate(5px, 5px);
+}
+@keyframes bgColor{
+    0%{
+        background-color: #c5183b;
+    }
+    49%{
+        background-color: #c5183b;
+    }
+    50%{
+        background-color: #3b919b;
+    }
+    100%{
+        background-color: #3b919b;
+    }
+} 
+@-webkit-keyframes bgColor{
+    0%{
+        background-color: #c5183b;
+    }
+    49%{
+        background-color: #c5183b;
+    }
+    50%{
+        background-color: #3b919b;
+    }
+    100%{
+        background-color: #3b919b;
+    }
+} 
 .header-container{
     position: absolute;
     top: 3%;
@@ -41,15 +123,6 @@ body{
     background-color: #3b919b;   
     box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
     transform: translate(5px, 5px);
-}
-.footer{
-    font-family: "ralewayMedium";
-    font-size: 12px;
-    width: 100vw;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    text-align: center;
 }
 .home-container{
     background-color: white;
@@ -187,14 +260,19 @@ body{
     color: white;
     box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 .winner-text-container{
     width: 100%;
+    /* width: 80%; */
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-left: 5px;
+    transition: all 0.2s ease-in-out;
 }
 .winner-text{
     font-family: -apple-system, BlinkMacSystemFont,
@@ -205,6 +283,20 @@ body{
     text-transform: uppercase;
     letter-spacing: 2px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.share-image-container{
+    display: inline-block;
+    width: 40px;
+    height: 50px;
+    margin-left: 5px;
+    background: url(./Images/share.png);
+    background-size: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-left: solid 3px black;
 }
 #red-winner-container{
     background-color: #c5183b;
@@ -220,13 +312,34 @@ body{
     border: none;
 }
 .winner-container:hover{
-    background: url(./Images/share.png);
-    background-size: 15%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: black;
-    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
     transform: translate(5px, 5px);
+}
+.winner-container:hover:before{
+    opacity: 1; 
+    transform: translate(0,0);
+}
+.winner-container:before{
+    content: attr(data-hover);
+    position: absolute;
+    top: 1.1em; 
+    left: 0;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont,
+                 'Segoe UI', Roboto, Oxygen, Ubuntu,
+                 Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+    opacity: 0;
+    transform: translate(100%,0);
+    transition: all 0.2s ease-in-out;
+}
+.winner-container:hover .winner-text-container{
+    opacity: 0; 
+    transform: translate(-100%,0)
 }
 .score{
     margin: 0;
@@ -263,57 +376,72 @@ body{
     height: fit-content;
     justify-content: space-between;
 }
-.dot-i, .dot-ui{
+.dot-i-red, .dot-ui-red, .dot-i-blue, .dot-ui-blue{
     display: inline-block;
     width: 8px;
     height: 8px;
     background-color: #ffac00;
 }
-.horizontal-bar-i, .horizontal-bar-ui{
+.horizontal-bar-i-red, .horizontal-bar-ui-red, .horizontal-bar-i-blue, .horizontal-bar-ui-blue{
+    opacity: 0.8;
     display: inline-block;
     width: 60px;
     height: 8px;
     background-color: #0000006d;
 }
-.vertical-bar-i, .vertical-bar-ui{
+.vertical-bar-i-red, .vertical-bar-ui-red, .vertical-bar-i-blue, .vertical-bar-ui-blue{
+    opacity: 0.8;
     display: inline-block;
     width: 8px;
     height: 60px;
     background-color: #0000006d;
 }
-.box-i, .box-ui{
+.box-i-red, .box-ui-red, .box-i-blue, .box-ui-blue{
     width: 60px;
 }
-.big-grid-dot-i, .big-grid-dot-ui{
+.big-grid-dot-i-red, .big-grid-dot-ui-red, .big-grid-dot-i-blue, .big-grid-dot-ui-blue{
+    opacity: 0.8;
     display: inline-block;
     width: 6px;
     height: 6px;
     background-color: #ffac00;
 }
-.big-grid-horizontal-bar-i, .big-grid-horizontal-bar-ui{
+.big-grid-horizontal-bar-i-red, .big-grid-horizontal-bar-ui-red, .big-grid-horizontal-bar-i-blue, .big-grid-horizontal-bar-ui-blue{
+    opacity: 0.8;
     display: inline-block;
     width: 50px;
     height: 6px;
     background-color: #0000006d;
 }
-.big-grid-vertical-bar-i, .big-grid-vertical-bar-ui{
+.big-grid-vertical-bar-i-red, .big-grid-vertical-bar-ui-red, .big-grid-vertical-bar-i-blue, .big-grid-vertical-bar-ui-blue{
     display: inline-block;
     width: 6px;
     height: 50px;
     background-color: #0000006d;
 }
-.big-grid-box-i, .big-grid-box-ui{
+.big-grid-box-i-red, .big-grid-box-ui-red, .big-grid-box-i-blue, .big-grid-box-ui-blue{
     width: 50px;
 }
-.horizontal-bar-i:hover, .vertical-bar-i:hover{
-    background-color: black;
+.horizontal-bar-i-red:hover, .vertical-bar-i-red:hover{
+    opacity: 0.5;
+    background-color: #c5183b;
     cursor: pointer;
 }
-.big-grid-horizontal-bar-i:hover, .big-grid-vertical-bar-i:hover{
-    background-color: black;
+.big-grid-horizontal-bar-i-red:hover, .big-grid-vertical-bar-i-red:hover{
+    opacity: 0.5;
+    background-color: #c5183b;
     cursor: pointer;
 }
-
+.horizontal-bar-i-blue:hover, .vertical-bar-i-blue:hover{
+    opacity: 0.5;
+    background-color: #3b919b;
+    cursor: pointer;
+}
+.big-grid-horizontal-bar-i-blue:hover, .big-grid-vertical-bar-i-blue:hover{
+    opacity: 0.5;
+    background-color: #3b919b;
+    cursor: pointer;
+}
 
 /* Rooms Screen 1 */
 .rooms-main-container{
@@ -339,10 +467,10 @@ body{
     align-items: center;
 }
 .room-input{
-    border: 5px solid black;
-    width: fit-content;
-    height: 40px;
-    padding: 0;
+    border: solid 1px black;
+    width: 128px;
+    height: 48px;
+    padding: 0px 10px;
     color: black;
     font-family: -apple-system, BlinkMacSystemFont,
                 'Segoe UI', Roboto, Oxygen, Ubuntu,
@@ -350,8 +478,8 @@ body{
     font-weight: bolder;
     font-size: 20px;
     cursor: text;
-    margin-right: 10px;
     transition: all 0.1s ease;
+    box-shadow: 5px 5px 0px 1px black;
 }
 .room-input:hover{
     background-color: #ffac00;
@@ -389,6 +517,37 @@ body{
 .join-room:hover{
     background-color: #3b919b;
 }
+.room-id-container{
+    font-family: -apple-system, BlinkMacSystemFont,
+                'Segoe UI', Roboto, Oxygen, Ubuntu,
+                Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    letter-spacing: 1px;
+    background-color: black;
+    width: 148px;
+    height: 48px;
+    border: 1px solid white;
+    box-shadow: 5px 5px 0px 1px black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    transition: transform 0.3s ease;
+
+}
+.room-id-container:hover span{
+    display: none;
+}
+.room-id-container:hover::before{
+    content: "COPY";
+}
+.room-id-container:hover{
+    cursor: pointer;
+    transform: translate(5px, 5px);
+    box-shadow: 0px 0px 0px 2px black;
+}
 .room-id-statement{
     margin-top: 40px;
     margin-bottom: 0;
@@ -400,4 +559,207 @@ body{
     width: 100px;
     height: 100px;
     background: url(./Images/icons8-waiting-room-96.png);
+}
+
+.Toastify__toast{
+    border-radius: 0px !important;
+    background-color: black !important;
+    border: 1px solid white !important;
+    box-shadow: 5px 5px 0px 1px black !important;
+}
+.Toastify__toast-body {
+    font-family: "ralewayMedium";
+    font-size: 16px;
+    color: white;
+    text-align: center;
+}
+.Toastify__close-button {
+    display: none;
+    color: white;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.about-container{
+    /* background-color: rgb(226, 17, 226); */
+    /* background-color: #ffac00; */
+    /* background-color: black; */
+    background-color: white;
+    position: relative;
+    padding: 50px;
+    width: 350px;
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.100);
+    /* box-shadow: 8px 8px 0px 0px rgb(0, 0, 0); */
+}
+.avatar-container{
+    position: absolute;
+    bottom: -1px;
+    margin-left: auto;
+    margin-right: auto;
+    background: url(./Images/avatar.png);
+    background-size: cover;
+    width: 180px;
+    height: 180px;
+}
+.avatar{
+    width: 100px;
+    height: 100px;
+}
+.about-text{
+    font-family: "ralewayMedium";
+    font-size: 14px;
+    text-align: left;
+    word-wrap: break-word;
+    margin-top: 0px;
+    margin-bottom: -5px;
+}
+.about-container-baksa-title{
+    display: inline-block;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-right: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background-color: #ffac00;
+    padding: 3px;
+}
+.horizontal-rule{
+    background-color: rgb(47, 47, 47);
+    width: 80%;
+    height: 1px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+.rule-heading{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    text-align: left;
+    font-weight: bold;
+    font-family: helvetica, arial, sans-serif;
+}
+.rule-text{
+    font-family: "ralewayMedium";
+    font-size: 14px;
+    text-align: left;
+    word-wrap: break-word;
+    color: black;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.credits-text{
+    width: 100%;
+    text-align: left;
+    margin-top: 0px;
+    font-family: "ralewayMedium";
+    font-size: 14px;
+    /* margin-top: 20px; */
+}
+.priyanshu-modi-text{
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 0px;
+}
+.priyanshu-modi-text:hover{
+    text-transform: uppercase;
+    margin-left: 3px;
+}
+.priyanshu-modi-text:hover::before{
+    content: "🧢";
+    margin-right: 5px;
+    font-size: 10px;
+}
+.chat-outer-container{
+    position: absolute;
+    bottom: 2%;
+    right: 1%;
+    width: 30%;
+    height: 80%;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.100);
+    overflow: hidden;
+}
+.chat-main-container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+.chat-message-container{
+    width: 95%;
+    height: fit-content;
+    padding: 10px;
+    margin: 2px 0px;
+    border-radius: 10px;
+}
+.chat-message-text{
+    width: 100%;
+    font-family: "ralewayMedium";
+    font-size: 14px;
+    text-align: left;
+    word-wrap: break-word;
+    color: black;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.chat-input-container{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    justify-content: space-between;
+    align-items: center;   
+}
+.chat-input{
+    border: solid 1px black;
+    width: 70%;
+    height: 30px;
+    padding: 0px 10px;
+    color: black;
+    font-family: -apple-system, BlinkMacSystemFont,
+                'Segoe UI', Roboto, Oxygen, Ubuntu,
+                Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    /* font-weight: bold; */
+    font-size: 14px;
+    cursor: text;
+    transition: all 0.1s ease;
+    box-shadow: 5px 5px 0px 1px black;
+}
+.chat-input:hover{
+    background-color: #ffac00;
+}
+.chat-send-button{
+    border: none;
+    width: 20%;
+    height: 33px;
+    margin-right: 5px;
+    font-family: -apple-system, BlinkMacSystemFont,
+                 'Segoe UI', Roboto, Oxygen, Ubuntu,
+                 Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background-color: #ffac00;
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.chat-send-button:hover{
+    transform: translate(5px, 5px);
+    box-shadow: 0px 0px 0px 2px black;
+    color: white;
 }

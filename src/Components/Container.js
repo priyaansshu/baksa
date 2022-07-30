@@ -28,6 +28,7 @@ export default function Container(props) {
                                 tempColor={props.tempColor}
                                 tempId={props.tempId}
                                 assignedColor={props.assignedColor}
+                                notTurnFunc = {props.notTurnFunc}
                             />)
             }   
         }
@@ -48,6 +49,7 @@ export default function Container(props) {
                                 tempColor={props.tempColor}
                                 tempId={props.tempId}
                                 assignedColor={props.assignedColor}
+                                notTurnFunc = {props.notTurnFunc}
                             />)
             }
         }

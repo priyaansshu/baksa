@@ -7,6 +7,9 @@ import Grid from './Components/Grid';
 import GameOver from './Components/GameOver';
 import Header from './Components/Header';
 import {io} from "socket.io-client";
+import { ToastContainer, toast } from 'react-toastify';
+import { css } from "glamor";
+import Chat from './Components/Chat';
 
 const socket = io('http://localhost:4000');
 
@@ -24,8 +27,9 @@ export default function Game(props) {
   
   var red="#c5183b";
   var blue="#3b919b";
-  const [turn, setTurn] = useState(red);
   const assignedColor = props.playerRole==1?red:blue;
+
+  const [turn, setTurn] = useState(red);
   const [redScore, setRedScore] = useState(0);
   const [blueScore, setBlueScore] = useState(0);
 
@@ -33,30 +37,53 @@ export default function Game(props) {
   var position;
   const [tempId, setTempId] = useState("");
   const [tempColor, setTempColor] = useState("");
+
+  const [finalRoomId, setFinalRoomId] = useState("");
+  const [messageArr, setMessageArr] = useState([]);
+
   var t; // variable for temporarily handling id
   var tempTurn; // variable for temporarily handling turn
   var tempBoxColor="";
 
-  function updateMapWithServer(){
-    console.log(tempTurn=="#c5183b"?"red":"blue");
-    socket.emit("update", {turn: tempTurn, roomId: props.roomId, position: position, tempId: t, tempBoxColor: tempBoxColor});
-  }
+  useEffect(()=>{
+    // window.history.pushState('', 'Room', '/'+props.roomId);
+    var tempRoomId = props.roomId+"1";
+    console.log(tempRoomId);
+    socket.emit("rejoin", {roomId: tempRoomId});
+  }, [])
 
   useEffect(()=>{
+    socket.on("final-room", ({roomId})=>{
+      // console.log(roomId);
+      setFinalRoomId(roomId);
+    })
+  }, [socket]);
+
+  function updateMapWithServer(){
+    // console.log("received");
+    socket.emit("test", {roomId: finalRoomId, socketId: props.socketId});
+    socket.emit("update", {turn: tempTurn, roomId: finalRoomId, socketId: props.socketId, position: position, tempId: t, tempBoxColor: tempBoxColor});
+  }
+  
+  useEffect(()=>{
+    // console.log(socket);
     socket.on("updated", (data)=>{
-      console.log("*******")
       position = data.position;
       tempBoxColor = data.tempBoxColor;
-      console.log(data.turn=="#c5183b"?"red":"blue");
       updateLocalVariablesWithServerValues(data.tempId, data.turn);
       elementCheckUtilityFunction(position, data.tempId);
+    });
+  }, [socket]);
+
+  useEffect(()=>{socket.on("test", (message)=>{
+      console.log(message);
     });
   }, [socket]);
 
   function updateLocalVariablesWithServerValues(tempId, tempColor){
     setTempId(tempId);
     setTempColor(tempColor);
-    console.log("tempColor: "+tempColor);
+    // console.log("tempColor: "+tempColor);
   }
 
   (function initMap(){
@@ -81,12 +108,12 @@ export default function Game(props) {
   function updateMap(position){
     if(elMap.get(position)!=="clicked"){
       setMap(elMap.set(position, "clicked"));
-      console.log(elMap);
+      // console.log(elMap);
     }
   }
 
   function elementCheckUtilityFunction(position, id){
-    console.log("here");
+    // console.log("here");
     updateMap(position);
     setTurnFunc();
     if(id.charAt(0) == "h"){
@@ -98,13 +125,14 @@ export default function Game(props) {
   }
 
   function elementCheck(id){
-    console.log("*******")
+    // console.log("*******")
     t=id;
     tempBoxColor=""
     position = calcPosition(id);
     elementCheckUtilityFunction(position, id);
     tempTurn = turn;
-    updateMapWithServer();
+    if(!props.vsComp)
+      updateMapWithServer();
   }
   
   function calcPosition(id){
@@ -127,7 +155,7 @@ export default function Game(props) {
 
   function setTurnFunc(){
     setTurn(turn=>turn===red?blue:red);
-    console.log("In the setTurn function: "+turn);
+    // console.log("In the setTurn function: "+turn);
   }
 
   function stayTurn(boxColor){
@@ -152,8 +180,6 @@ export default function Game(props) {
     pos5=calcPosition(id5);
     pos6=calcPosition(id6);
     
-    // console.log(tempColor);
-    // var boxColor = tempColor===blue?red:blue;
     if(tempBoxColor==""){
       var boxColor = turn;
     }
@@ -185,7 +211,7 @@ export default function Game(props) {
       updateTotal();
     }
 
-    console.log(boxMap);
+    // console.log(boxMap);
     tempBoxColor=boxColor;
   }
   
@@ -207,8 +233,6 @@ export default function Game(props) {
     pos5=calcPosition(id5);
     pos6=calcPosition(id6);
 
-    // console.log(tempColor);
-    // var boxColor = tempColor===blue?red:blue;
     if(tempBoxColor==""){
       var boxColor = turn;
     }
@@ -239,7 +263,7 @@ export default function Game(props) {
       updateScore(("b-"+n+"-"+m));
       updateTotal();
     }
-    console.log(boxMap);
+    // console.log(boxMap);
     tempBoxColor=boxColor;
   }
 
@@ -253,11 +277,14 @@ export default function Game(props) {
   }
 
   function updateTotal(){
+    tempBoxCount=0;
     for (const [key, value] of boxMap.entries()) {
       if(value!="transparent"){
+        // console.log(key+": "+value);
         tempBoxCount++;
       }
     }
+    console.log("tempBoxCount: "+tempBoxCount);
     if(props.gridSize == 4){
       if(tempBoxCount == 16){
         setGameOver(true);
@@ -268,6 +295,13 @@ export default function Game(props) {
         setGameOver(true);
       }
     }    
+    // console.log("totalScore: "+(redScore+blueScore));
+    // if(props.gridSize == 4 && redScore+blueScore == 15){
+    //   setGameOver(true);
+    // }
+    // else if(props.gridSize == 8 && redScore+blueScore == 63){
+    //   setGameOver(true);
+    // }
   }
   
   // function compCheckVerticalBoxes(id, elRef){
@@ -542,13 +576,40 @@ export default function Game(props) {
   //   }
   // }
   
+  useEffect(() => {
+    var playerColor = assignedColor=="#c5183b"?"Red":"Blue";
+    toast("You are "+playerColor, {
+      className: css({
+        background: "#c5183b !important",
+      }),
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+    });  
+  }, []);
+
+  function notTurnFunc(){
+    toast("It's not your turn", {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+    }); 
+  }
+
   return (
     <>
-    {console.log(tempColor)}
+    {/* {console.log(tempColor)} */}
     <Header gridSize={props.gridSize}/>
       <div className="center-container">
         <div className={!gameOver?"show-grid":"hide-grid"}>
-          {/* {console.log(tempColor)} */}
           <Grid 
             gridSize={props.gridSize}
             func={elementCheck}  
@@ -559,20 +620,21 @@ export default function Game(props) {
             tempColor={tempColor}
             tempId={tempId}
             assignedColor={assignedColor}
+            notTurnFunc = {notTurnFunc}
           />
         </div>
-        {/* <div className="uninteractable-board"
-            style={assignedColor==turn?{display:"none"}:{display:"block", backgroundColor:"blue", position:"relative", height:"100px", width: "100px", zIndex:"99"}}>
-        </div> */}
+
         <div className={!gameOver?"hide-game-over":"show-game-over"}>
-          <GameOver redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap}/>
+          <GameOver redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap} vsComp={props.vsComp}/>
         </div>
-        {console.log(turn)}
+        {/* {console.log(turn)} */}
         <div className={!gameOver?"score-container":"hide-score-container"}>
           <h2 className="score" id={turn==red?"turn-score-red":"score-red"}>Red: {redScore}</h2>
           <h2 className="score" id={turn==blue?"turn-score-blue":"score-blue"}>Blue: {blueScore}</h2>
         </div>
       </div>
+    <Chat messageArr={messageArr} setMessageArr={setMessageArr} chatColor={assignedColor} roomId={finalRoomId}/>
+    <ToastContainer />
     </>
   );
 }
