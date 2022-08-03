@@ -11,9 +11,10 @@ export default function GameOver(props) {
     const [gridSize, setGridSize] = useState(4);
     const [hideWinner, setHideWinner] = useState("flex");
     const [showShare, setShowShare] = useState("none");
-    const [showConfetti, setShowConfetti] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(true);
     const [recycleConfetti, setRecycleConfetti] = useState(true);
-    const navigate = useNavigate();
+    const history = useNavigate();
+
     const generateRandomString = (myLength) => {
         const chars =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -25,17 +26,23 @@ export default function GameOver(props) {
         const randomString = randomArray.join("");
         return randomString;
     };
+    
     const newRoomId = generateRandomString(6);
 
     (function calcResult(){
-        if(props.redScore>props.blueScore){
-            result = "red";
-        }
-        else if(props.redScore<props.blueScore){
-            result = "blue";
+        if(props.gameLeaveWinner=="none"){
+            if(props.redScore>props.blueScore){
+                result = "red";
+            }
+            else if(props.redScore<props.blueScore){
+                result = "blue";
+            }
+            else{
+                result = "draw";
+            }
         }
         else{
-            result = "draw";
+            result = props.gameLeaveWinner
         }
     })();
     
@@ -66,8 +73,11 @@ export default function GameOver(props) {
             if(value=="#c5183b"){
                 message+="🟥";
             }
-            else{
+            else if(value=="#3b919b"){
                 message+="🟦";
+            }
+            else{
+                message+="⬜️";
             }
             i++;
         }   
@@ -88,14 +98,18 @@ export default function GameOver(props) {
     } 
 
     // useEffect(()=>{
-    //     setTimeout(()=>{ 
-    //         setShowConfetti(true);
-    //     }, 2000)
-    //     setTimeout(()=>{
-    //         setRecycleConfetti(false);
+    //     if(props.gameOver){
+    //         console.log("here");
+    //         setTimeout(()=>{
+    //             setShowConfetti(true);
+    //         }
+    //         ,2000);
+    //         setTimeout(()=>{
+    //             setRecycleConfetti(false);
+    //         }
+    //         ,5000);
     //     }
-    //     ,5000);
-    // }, [])
+    // }, [props.gameOver])
 
     return (
     <>
@@ -107,6 +121,13 @@ export default function GameOver(props) {
             />
         }  */}
         <div className="logo-container"></div>
+        {props.gameLeaveWinner!="none"?
+            <div className="game-leave-message">
+                The other player left the room.
+            </div>
+            :
+            null
+        }
         <div className="winner-outer-container">
             <div 
                 className="winner-container" 
@@ -125,7 +146,7 @@ export default function GameOver(props) {
                 >
                         <h2 
                             className="winner-text">
-                                {result=="draw"?"It's a draw":result+" wins"}
+                                {result=="draw"?"Draw":result+" wins"}
                                 <div className = "share-image-container"/>
                         </h2>
                 </div>
@@ -136,7 +157,7 @@ export default function GameOver(props) {
             <button 
                 className="grid-button" 
                 id={props.gridSize==4?"four-button":"eight-button"} 
-                onClick={()=>{navigate(-1)}}
+                onClick={()=>{history("/")}}
                 >
                 Go Again
             </button>

@@ -5,7 +5,7 @@ import Game from "./Game"
 import Header from './Components/Header';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {Route, Link, Routes} from "react-router-dom";
+import {Route, Link, Routes, Navigate, useNavigate} from "react-router-dom";
 
 const socket = io('http://localhost:4000');
 
@@ -17,10 +17,23 @@ export default function (props) {
     const [playerRole, setPlayerRole] = useState(); // playerRole=1 if he created the room, else 2 if he joined one
     const [roomCode, setRoomCode] = useState();
     const [roomDoesNotExist, setRoomDoesNotExist] = useState(false);
-    
-    socket.on("start-game", ()=>{
+    const [hostGridSize, setHostGridSize] = useState("");
+    const history = useNavigate();
+    const [urlRoomId, setUrlRoomId] = useState("");
+    // var urlRoomId;
+
+    socket.on("start-game", (tempUrlRoomId)=>{
+        if(playerRole==2){
+            if(roomId[6]=='8'){
+                setHostGridSize(8);
+            }
+            else{
+                setHostGridSize(4);
+            }
+        }
         if(playerRole==1)toast.dismiss(roomCopiedToastId.current);
         setJoined(true);
+        setUrlRoomId(tempUrlRoomId);
     })
     socket.off("room-full").on("room-full", ()=>{
         toast("Room is full", {
@@ -84,137 +97,168 @@ export default function (props) {
         return randomString;
       };
 
+    useEffect(()=>{
+        if(urlRoomId!=""){
+            history("/room/"+urlRoomId);
+        }
+    }, [urlRoomId])
+
+    useEffect(()=>{
+        var curUrl = JSON.stringify(window.location.href)
+        console.log(performance.getEntriesByType("navigation")[0].type, curUrl.substring(curUrl.length-6, curUrl.length-1));
+        if(curUrl.substring(curUrl.length-6, curUrl.length-1)!="room/" && curUrl.substring(curUrl.length-5, curUrl.length-1)!="room"){
+            history("/");
+        }
+    }, [])
+
     return (
         <>
-            {joined?
-            // <Route exact path={"/"+playerRole==1?roomCode:roomId} element={
-                <Game gridSize={props.gridSize} roomId={playerRole==1?roomCode:roomId} socketId={socket.id} playerRole={playerRole}/>
-            // }/>
-            :
-            // <Route exact path={"/"} element={
-            <div>
-                <Header gridSize={props.gridSize}/>
-                {!shared?
-                <div className="rooms-main-container">
-                    <div className="create-room-container">
-                        <button 
-                            className="create-room" 
-                            onClick={()=>{
+            <Routes>
+                <Route path = "/" element = {
+                    <div>
+                        <Header gridSize={props.gridSize}/>
+                        {!shared?
+                        <div className="rooms-main-container">
+                            {/* <Link to={"/"+roomCode} style={{textDecoration: "none"}}> */}
+                                <div className="create-room-container">
+                                    <button 
+                                        className="create-room" 
+                                        onClick={()=>{
+                                            setHostGridSize(props.gridSize);
+                                            idCopied();
+                                            setShared(true);
+                                            if(props.gridSize==8){
+                                                var tempRoomCode = generateRandomString(6)+"8";
+                                            }
+                                            else{
+                                                var tempRoomCode = generateRandomString(6);
+                                            }
+                                            setRoomCode(tempRoomCode);
+                                            socket.emit("room-created", tempRoomCode);
+                                            setPlayerRole(1)
+                                            navigator.clipboard.writeText(tempRoomCode)
+                                            }
+                                        }>    
+                                    </button>
+                                </div>
+                            {/* </Link> */}
+                            {/* <Link to={"/"+roomId} style={{textDecoration: "none"}}> */}
+                                <div className="join-room-container">
+                                    <input 
+                                        className="room-input" 
+                                        type="text" 
+                                        style={roomId!==""?{marginRight: "10px"}:{marginRight:"0px"}}
+                                        onChange={(e)=>{
+                                            setRoomId(e.target.value);
+                                        }} 
+                                        onKeyPress={(e)=>{
+                                            if(e.key==="Enter"){
+                                                setPlayerRole(2)
+                                                socket.emit("joined-room", roomId);
+                                            }
+                                        }}
+                                    />
+                                    {roomId!==""?
+                                        <button className="join-room"   
+                                            onClick={()=>{
+                                                setPlayerRole(2);
+                                                socket.emit("joined-room", roomId)
+                                            }}>
+                                        Join
+                                        </button>
+                                    :null
+                                    }
+                                </div>
+                            {/* </Link> */}
+                            {!roomFull?
+                                <p className="room-id-statement">Share Room ID with a friend or enter a Room ID to start the game</p>
+                            :
+                                <p className="room-full-statement">Room is already full</p>
+                            }
+                        </div>:
+                        <div className="rooms-main-container waiting-room-container">
+                            <div className="waiting-icon-container">
+                            </div>
+                            <div className="room-id-container" onClick={()=>{
                                 idCopied();
-                                setShared(true);
-                                var tempRoomCode = generateRandomString(6);
-                                setRoomCode(tempRoomCode);
-                                // console.log(tempRoomCode);
-                                socket.emit("room-created", tempRoomCode);
-                                setPlayerRole(1)
-                                navigator.clipboard.writeText(tempRoomCode)
+                                navigator.clipboard.writeText(roomCode);
                                 }
-                            }>    
-                        </button>
-                    </div>
-                    <div className="join-room-container">
-                        <input 
-                            className="room-input" 
-                            type="text" 
-                            style={roomId!==""?{marginRight: "10px"}:{marginRight:"0px"}}
-                            onChange={(e)=>{
-                                setRoomId(e.target.value);
-                            }} 
-                            onKeyPress={(e)=>{
-                                if(e.key==="Enter"){
-                                    setPlayerRole(2)
-                                    socket.emit("joined-room", roomId);
-                                }
-                            }}
-                        />
-                        {roomId!==""?
-                            <button className="join-room"   
-                                onClick={()=>{
-                                    setPlayerRole(2);
-                                    socket.emit("joined-room", roomId)
-                                }}>
-                            Join
-                            </button>
-                        :console.log("Enter Room Id")
-                        }
-                    </div>
-                    {!roomFull?
-                        <p className="room-id-statement">Share Room ID with a friend or enter a Room ID to start the game</p>
-                    :
-                        <p className="room-full-statement">Room is already full</p>
-                    }
-                </div>:
-                <div className="rooms-main-container waiting-room-container">
-                    <div className="waiting-icon-container">
-                    </div>
-                    <div className="room-id-container" onClick={()=>{
-                        idCopied();
-                        navigator.clipboard.writeText(roomCode);
-                        }
-                    }>
-                        <span>{roomCode}</span>
-                    </div>
-                    <p className="room-id-statement">Waiting for the other player to join the room</p>
-                </div>}
-                <ToastContainer/>
-            </div> 
-            }
+                            }>
+                                <span>{roomCode}</span>
+                            </div>
+                            <p className="room-id-statement">Waiting for the other player to join the room</p>
+                        </div>}
+                        <ToastContainer/>
+                    </div>}
+                />
+                {console.log("roomCode: "+urlRoomId)}
+                <Route path = {"/"+urlRoomId} element = {<Game gridSize={hostGridSize} roomId={playerRole==1?roomCode:roomId} socketId={socket.id} playerRole={playerRole}/>} />
+            </Routes>
         </>
   )
 }
 
 
-        // <Route path = "/" element = {
+
+
+        // {joined?
+        //     <Route exact path={"/"+playerRole==1?roomCode:roomId} element={
+        //         <Game gridSize={hostGridSize} roomId={playerRole==1?roomCode:roomId} socketId={socket.id} playerRole={playerRole}/>
+        //     }/>
+        //     :
+        //     <Route exact path={"/"} element={
         //     <div>
-        //         <Header gridSize={props.gridSize}/>
+        //         <Header gridSize={props.gridSize} fromMidGame={false}/>
         //         {!shared?
         //         <div className="rooms-main-container">
-        //             <Link to={"/"+roomCode} style={{textDecoration: "none"}}>
-        //                 <div className="create-room-container">
-        //                     <button 
-        //                         className="create-room" 
-        //                         onClick={()=>{
-        //                             idCopied();
-        //                             setShared(true);
+        //             <div className="create-room-container">
+        //                 <button 
+        //                     className="create-room" 
+        //                     onClick={()=>{
+        //                         setHostGridSize(props.gridSize);
+        //                         idCopied();
+        //                         setShared(true);
+        //                         if(props.gridSize==8){
+        //                             var tempRoomCode = generateRandomString(6)+"8";
+        //                         }
+        //                         else{
         //                             var tempRoomCode = generateRandomString(6);
-        //                             setRoomCode(tempRoomCode);
-        //                             // console.log(tempRoomCode);
-        //                             socket.emit("room-created", tempRoomCode);
-        //                             setPlayerRole(1)
-        //                             navigator.clipboard.writeText(tempRoomCode)
-        //                             }
-        //                         }>    
+        //                         }
+        //                         setRoomCode(tempRoomCode);
+        //                         // console.log(tempRoomCode);
+        //                         socket.emit("room-created", tempRoomCode);
+        //                         setPlayerRole(1)
+        //                         navigator.clipboard.writeText(tempRoomCode)
+        //                         }
+        //                     }>    
+        //                 </button>
+        //             </div>
+        //             <div className="join-room-container">
+        //                 <input 
+        //                     className="room-input" 
+        //                     type="text" 
+        //                     style={roomId!==""?{marginRight: "10px"}:{marginRight:"0px"}}
+        //                     onChange={(e)=>{
+        //                         setRoomId(e.target.value);
+        //                     }} 
+        //                     onKeyPress={(e)=>{
+        //                         if(e.key==="Enter"){
+        //                             setPlayerRole(2)
+        //                             socket.emit("joined-room", roomId);
+        //                         }
+        //                     }}
+        //                 />
+        //                 {roomId!==""?
+        //                     <button className="join-room"   
+        //                         onClick={()=>{
+        //                             setPlayerRole(2);
+        //                             socket.emit("joined-room", roomId)
+        //                         }}>
+        //                     Join
         //                     </button>
-        //                 </div>
-        //             </Link>
-        //             <Link to={"/"+roomId} style={{textDecoration: "none"}}>
-        //                 <div className="join-room-container">
-        //                     <input 
-        //                         className="room-input" 
-        //                         type="text" 
-        //                         style={roomId!==""?{marginRight: "10px"}:{marginRight:"0px"}}
-        //                         onChange={(e)=>{
-        //                             setRoomId(e.target.value);
-        //                         }} 
-        //                         onKeyPress={(e)=>{
-        //                             if(e.key==="Enter"){
-        //                                 setPlayerRole(2)
-        //                                 socket.emit("joined-room", roomId);
-        //                             }
-        //                         }}
-        //                     />
-        //                     {roomId!==""?
-        //                         <button className="join-room"   
-        //                             onClick={()=>{
-        //                                 setPlayerRole(2);
-        //                                 socket.emit("joined-room", roomId)
-        //                             }}>
-        //                         Join
-        //                         </button>
-        //                     :null
-        //                     }
-        //                 </div>
-        //             </Link>
+        //                 :console.log("Enter Room Id")
+        //                 }
+        //             </div>
         //             {!roomFull?
         //                 <p className="room-id-statement">Share Room ID with a friend or enter a Room ID to start the game</p>
         //             :
@@ -234,6 +278,4 @@ export default function (props) {
         //             <p className="room-id-statement">Waiting for the other player to join the room</p>
         //         </div>}
         //         <ToastContainer/>
-        //     </div>}
-        // />
-        // <Route path = {"/"+playerRole==1?roomCode:roomId} element = {<Game gridSize={props.gridSize} roomId={playerRole==1?roomCode:roomId} socketId={socket.id} playerRole={playerRole}/>} />
+        //     </div> }/>}

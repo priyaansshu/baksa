@@ -69,8 +69,8 @@ function App() {
             </div>
           </div>
         }/>   
-        <Route exact path={"/offline"} element={<Game gridSize={gridSize} vsComp={vsComp}/>}/>
-        <Route exact path={"/room"} element={<Room gridSize={gridSize}/>}/>
+        <Route exact path={"/offline"} element={<Game gridSize={gridSize} vsComp={vsComp} setVsComp={setVsComp}/>}/>
+        <Route exact path={"/room/*"} element={<Room gridSize={gridSize}/>}/>
       </Routes>
     </>
   )

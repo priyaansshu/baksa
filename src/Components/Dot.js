@@ -68,8 +68,8 @@ export default function Dot(props) {
             onClick={(e)=>{
               if(!props.vsComp){
                 if(props.assignedColor==props.turn){
-                // console.log("here");
                   if(e.target.id.charAt(0)!=="d" && e.target.id.charAt(0)!=="b"){
+                    // console.log("clicked")
                     var tempPosition = tempPos(e.target.id);
                     if(props.map.get(tempPosition)=="unclicked"){
                       e.target.style.backgroundColor = props.turn;

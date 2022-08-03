@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import react, {useState, useEffect} from 'react';
+import react, {useState, useEffect, useRef} from 'react';
 import "./style.css";
 import Dot from './Components/Dot';
 import Grid from './Components/Grid';
@@ -10,6 +10,8 @@ import {io} from "socket.io-client";
 import { ToastContainer, toast } from 'react-toastify';
 import { css } from "glamor";
 import Chat from './Components/Chat';
+import { useNavigate } from 'react-router-dom';
+import { useBeforeunload } from 'react-beforeunload';
 
 const socket = io('http://localhost:4000');
 
@@ -39,16 +41,35 @@ export default function Game(props) {
   const [tempColor, setTempColor] = useState("");
 
   const [finalRoomId, setFinalRoomId] = useState("");
+  
   const [messageArr, setMessageArr] = useState([]);
+  const [showChat, setShowChat] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [lastSeen, setLastSeen] = useState(0);
+
+  const chatRef = useRef();
+  const gridRef = useRef();
+  const chatButtonRef = useRef();
+
+  const [gameLeaveWinner, setGameLeaveWinner] = useState("none");
+  const [playerLeft, setPlayerLeft] = useState(false);
+  const [ locationKeys, setLocationKeys ] = useState([])
+  const history = useNavigate()
 
   var t; // variable for temporarily handling id
   var tempTurn; // variable for temporarily handling turn
   var tempBoxColor="";
 
+
   useEffect(()=>{
-    // window.history.pushState('', 'Room', '/'+props.roomId);
+    var curUrl = JSON.stringify(window.location.href);
+    if(curUrl.substring(curUrl.length-8, curUrl.length-1)=="offline"){
+      props.setVsComp(true);
+    }
+  }, [])
+
+  useEffect(()=>{
     var tempRoomId = props.roomId+"1";
-    console.log(tempRoomId);
     socket.emit("rejoin", {roomId: tempRoomId});
   }, [])
 
@@ -61,7 +82,7 @@ export default function Game(props) {
 
   function updateMapWithServer(){
     // console.log("received");
-    socket.emit("test", {roomId: finalRoomId, socketId: props.socketId});
+    // socket.emit("test", {roomId: finalRoomId, socketId: props.socketId});
     socket.emit("update", {turn: tempTurn, roomId: finalRoomId, socketId: props.socketId, position: position, tempId: t, tempBoxColor: tempBoxColor});
   }
   
@@ -75,20 +96,16 @@ export default function Game(props) {
     });
   }, [socket]);
 
-  useEffect(()=>{socket.on("test", (message)=>{
-      console.log(message);
-    });
-  }, [socket]);
-
   function updateLocalVariablesWithServerValues(tempId, tempColor){
     setTempId(tempId);
     setTempColor(tempColor);
-    // console.log("tempColor: "+tempColor);
   }
 
   (function initMap(){
     if(mapFlag){
-      for(i=0; i<65; ++i){
+      var tempSize = props.gridSize==4?65:225;
+      for(i=0; i<tempSize; ++i){
+      // for(i=0; i<props.gridSize==4?65:225; ++i){
         elMap.set(i, "unclicked");
       }
       setMapFlag(false);
@@ -97,8 +114,10 @@ export default function Game(props) {
 
   (function initBoxMap(){
     if(boxFlag){
-      for(i=1; i<=4; ++i){
-        for(j=1; j<=4; ++j)
+      for(i=1; i<=props.gridSize; ++i){
+      // for(i=1; i<=4; ++i){
+        for(j=1; j<=props.gridSize; ++j)
+        // for(j=1; j<=4; ++j)
           boxMap.set("b-"+i+"-"+j, "transparent");
       }
       setBoxFlag(false);
@@ -125,10 +144,11 @@ export default function Game(props) {
   }
 
   function elementCheck(id){
-    // console.log("*******")
+    console.log(elMap);
     t=id;
     tempBoxColor=""
     position = calcPosition(id);
+    console.log(position);
     elementCheckUtilityFunction(position, id);
     tempTurn = turn;
     if(!props.vsComp)
@@ -150,6 +170,7 @@ export default function Game(props) {
       part2 = parseInt(id.charAt(4));
     }
     position = part1 + part2;
+    // console.log(position);
     return position;
   }
 
@@ -286,7 +307,7 @@ export default function Game(props) {
     }
     console.log("tempBoxCount: "+tempBoxCount);
     if(props.gridSize == 4){
-      if(tempBoxCount == 16){
+      if(tempBoxCount == 1){
         setGameOver(true);
       }
     }
@@ -576,21 +597,26 @@ export default function Game(props) {
   //   }
   // }
   
+  const playerColorToastId = useRef(null);
   useEffect(() => {
-    var playerColor = assignedColor=="#c5183b"?"Red":"Blue";
-    toast("You are "+playerColor, {
-      className: css({
-        background: "#c5183b !important",
-      }),
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-    });  
-  }, []);
+    var curUrl = JSON.stringify(window.location.href);
+    var tempVsComp;
+    if(curUrl.substring(curUrl.length-8, curUrl.length-1)=="offline"){
+      tempVsComp = true;
+    }
+    if(!tempVsComp && !gameOver){
+      var playerColor = assignedColor=="#c5183b"?"Red":"Blue";
+      playerColorToastId.current = toast("You are "+playerColor, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });  
+    }
+  }, [gameOver, props.vsComp, ]);
 
   function notTurnFunc(){
     toast("It's not your turn", {
@@ -604,12 +630,99 @@ export default function Game(props) {
     }); 
   }
 
+  function sendMessage(tempMessage, playerRole){
+    if(tempMessage==""){
+        return;
+    }
+    socket.emit("send-message", {roomId: finalRoomId, tempMessage: tempMessage, playerRole: playerRole});
+  }
+
+  socket.off("receive-message");
+  socket.on("receive-message", (tempMessage, playerRole)=>{
+      console.log("message received");
+
+      const tempMessageArr = [...messageArr];
+      tempMessageArr.push({sender: playerRole, message: tempMessage});
+      console.log(tempMessageArr);
+      setMessageArr(tempMessageArr);
+    })
+
+    useEffect(()=>{
+      // if(playerColorToastId.current!=null && showChat){
+      //   toast.dismiss(playerColorToastId.current);
+      // }
+      if(showChat){
+        setLastSeen(messageArr.length);
+        setUnreadCount(0);
+      }
+      var tempUnreadCount = messageArr.length-lastSeen;
+      setUnreadCount(tempUnreadCount);
+    }, [showChat])
+
+    useEffect(()=>{
+      if(showChat){
+        setUnreadCount(0);
+        setLastSeen(messageArr.length);
+      }
+      else{
+        var tempUnreadCount = messageArr.length-lastSeen;
+        setUnreadCount(tempUnreadCount);
+      }
+    }, [messageArr.length])
+
+    useEffect(() => {
+      if(showChat){
+        function handleClickOutside(event) {
+          if (chatRef.current && !chatRef.current.contains(event.target) && gridRef.current && !gridRef.current.contains(event.target) && chatButtonRef.current && !chatButtonRef.current.contains(event.target)) {
+            setShowChat(false);
+          }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }
+    }, [showChat]);
+
+    // socket.off("game-left");
+    useEffect(()=>{
+      if(!props.vsComp){
+        !gameOver && socket.on("game-left", ({winner})=>{
+          console.log("The other player left the game");
+          setPlayerLeft(true);
+          setGameOver(true);
+          setGameLeaveWinner(winner);
+        })
+      }
+    }, [socket])
+
+    useEffect(()=>{
+      if(!props.vsComp){
+        var tempRoomId = finalRoomId;
+        if(!playerLeft){
+          const intervalId = setInterval(() => {
+            socket.emit("game-leave-check", ({playerRole: props.playerRole, roomId: tempRoomId}))
+          }, 2000);
+        }
+      }
+    }, [finalRoomId])
+
+    window.addEventListener('popstate', (event) => {
+      if (event.state) {
+        window.location.reload();
+      }
+     }, false)
+
+    useEffect(()=>{
+      window.history.pushState({name: "browserBack"}, "on browser back click", window.location.href);
+      window.history.pushState({name: "browserBack"}, "on browser back click", window.location.href);
+    }, []);
+
   return (
     <>
-    {/* {console.log(tempColor)} */}
-    <Header gridSize={props.gridSize}/>
+      <Header gridSize={props.gridSize} gameOver={gameOver} fromMidGame={true} vsComp={props.vsComp}/>
       <div className="center-container">
-        <div className={!gameOver?"show-grid":"hide-grid"}>
+        <div className={!gameOver?"show-grid":"hide-grid"} ref={gridRef}>
           <Grid 
             gridSize={props.gridSize}
             func={elementCheck}  
@@ -625,7 +738,7 @@ export default function Game(props) {
         </div>
 
         <div className={!gameOver?"hide-game-over":"show-game-over"}>
-          <GameOver redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap} vsComp={props.vsComp}/>
+          <GameOver gameLeaveWinner={gameLeaveWinner} redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap} vsComp={props.vsComp} gameOver={gameOver}/>
         </div>
         {/* {console.log(turn)} */}
         <div className={!gameOver?"score-container":"hide-score-container"}>
@@ -633,7 +746,21 @@ export default function Game(props) {
           <h2 className="score" id={turn==blue?"turn-score-blue":"score-blue"}>Blue: {blueScore}</h2>
         </div>
       </div>
-    <Chat messageArr={messageArr} setMessageArr={setMessageArr} chatColor={assignedColor} roomId={finalRoomId}/>
+    {!props.vsComp&&<div className={assignedColor==red?"chat-button-container-red":"chat-button-container-blue"}>
+      <div ref={chatButtonRef} className="chat-button" onClick={()=>{
+        setShowChat(!showChat);
+      }
+      }>
+        <div className="unread-count-container" style={{visibility: unreadCount==0?"hidden":"visible"}}>
+          {unreadCount}
+        </div>
+      </div>
+    </div>}
+    {!props.vsComp&&
+      <div ref={chatRef}>
+        <Chat sendMessage={sendMessage} messageArr={messageArr} chatColor={assignedColor} roomId={finalRoomId} playerRole={props.playerRole} showChat={showChat}/>
+      </div>
+    }
     <ToastContainer />
     </>
   );

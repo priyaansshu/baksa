@@ -23,10 +23,8 @@ io.on("connection", socket =>{
             }
             else{
                 socket.join(roomId);
-                // const sockets = Array.from(io.of("/").adapter.rooms.get(roomId)).map(socket => socket);
-                // console.log("sockets: "+sockets);
                 console.log(socket.id + " joined room " + roomId);
-                io.in(roomId).emit("start-game");
+                io.in(roomId).emit("start-game", roomId);
             }     
         }
         else{
@@ -37,30 +35,30 @@ io.on("connection", socket =>{
         var temp = roomId.roomId;
         console.log(temp);
         socket.join(temp);
-        // const sockets = Array.from(io.of("/").adapter.rooms.get(temp)).map(socket => socket);
-        // console.log("sockets: "+sockets);
+        const sockets = Array.from(io.of("/").adapter.rooms.get(temp)).map(socket => socket);
+        console.log("sockets: "+sockets);
 
         io.in(temp).emit("final-room", roomId);
     });
 
     socket.on("update", ({turn, roomId, socketId, position, tempId, tempBoxColor})=>{
-        // console.log(socket.nsp.name);
-        // const sockets = Array.from(io.of("/").adapter.rooms.get(roomId)).map(socket => socket);
-        // var partner = sockets.find(socket => socket !== socketId);
-        // console.log("personal Id: "+socketId);
-        // console.log("partner Id: "+partner);
         socket.to(roomId).emit("updated", {turn, position, tempId, tempBoxColor});
     })
-    socket.on("test", ({roomId, socketId})=>{
-        // console.log(roomId);
-        const sockets = Array.from(io.of("/").adapter.rooms.get(roomId)).map(socket => socket);
-        console.log(sockets);
-        socket.to(roomId).emit("test", "test");
+    socket.on("send-message", ({roomId, tempMessage, playerRole}) => {
+        io.in(roomId).emit("receive-message", tempMessage, playerRole);
     })
-    socket.on("message", ({roomId, tempMessage})=>{
-        console.log(tempMessage);
-        console.log(roomId);
-        socket.broadcast.emit("message", tempMessage);
+    socket.on("game-leave-check", ({playerRole, roomId})=>{
+        var rooms = io.of("/").adapter.rooms;
+        const roomSockets = rooms.get(roomId);
+        if(roomSockets!=undefined){
+            const numClients = roomSockets.size;
+            // console.log(numClients);
+            if(numClients<2){
+                // const tempWinner = [...roomSockets][0];
+                const winner = playerRole==1?"red":"blue";
+                io.in(roomId).emit("game-left", {winner});
+            }
+        }
     })
 })
 
