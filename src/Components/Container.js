@@ -24,7 +24,11 @@ export default function Container(props) {
                                 boxMap={props.boxMap}
                                 gridSize={props.gridSize}
                                 vsComp={props.vsComp}
-                                // compFunc={props.compFunc}
+                                compFunc={props.compFunc}
+                                tempColor={props.tempColor}
+                                tempId={props.tempId}
+                                assignedColor={props.assignedColor}
+                                notTurnFunc = {props.notTurnFunc}
                             />)
             }   
         }
@@ -41,7 +45,11 @@ export default function Container(props) {
                                 boxMap={props.boxMap}
                                 gridSize={props.gridSize}
                                 vsComp={props.vsComp}
-                                // compFunc={props.compFunc}
+                                compFunc={props.compFunc}
+                                tempColor={props.tempColor}
+                                tempId={props.tempId}
+                                assignedColor={props.assignedColor}
+                                notTurnFunc = {props.notTurnFunc}
                             />)
             }
         }
