@@ -3,7 +3,7 @@ import "../style.css";
 import {io} from "socket.io-client";
 import {useSpring, animated} from "react-spring";
 
-const socket = io('https://guarded-crag-00258.herokuapp.com/');
+const socket = io('https://safe-castle-20263.herokuapp.com/');
 
 export default function Chat(props) {
     const [message, setMessage]= useState("");
