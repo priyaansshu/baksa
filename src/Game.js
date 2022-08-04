@@ -307,7 +307,7 @@ export default function Game(props) {
     }
     console.log("tempBoxCount: "+tempBoxCount);
     if(props.gridSize == 4){
-      if(tempBoxCount == 1){
+      if(tempBoxCount == 16){
         setGameOver(true);
       }
     }
