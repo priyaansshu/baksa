@@ -5,6 +5,7 @@ const io = require("socket.io")(server, {
         origin: "*"
     }
 })
+require('dotenv').config()
 
 io.on("connection", socket =>{
     socket.io = io;
