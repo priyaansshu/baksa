@@ -13,7 +13,7 @@ import Chat from './Components/Chat';
 import { useNavigate } from 'react-router-dom';
 import { useBeforeunload } from 'react-beforeunload';
 
-const socket = io('https://safe-castle-20263.herokuapp.com/');
+const socket = io('https://shielded-ocean-50587.herokuapp.com/');
 
 export default function Game(props) {
   var i, j;

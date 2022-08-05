@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Route, Link, Routes, Navigate, useNavigate} from "react-router-dom";
 
-const socket = io('https://safe-castle-20263.herokuapp.com/');
+const socket = io('https://shielded-ocean-50587.herokuapp.com/');
 
 export default function (props) {
     const [roomId, setRoomId] = useState("");
