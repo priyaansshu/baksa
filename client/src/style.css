@@ -10,33 +10,6 @@ body{
     align-items: center;
     overflow: hidden;
 }
-@media screen and (max-width: 768px) {
-    html{
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-    }
-    .parent-container{
-        display: block;
-        min-width: 100%;
-        min-height: 100%;
-        overflow: hidden;
-    }
-    #root{
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-    }
-    #eight-button{
-        display: none;
-    }
-    .mode-button{
-        margin: 0px 5px;
-    }
-}
 .about-button{
     position: absolute;
     top: 3%;
@@ -55,15 +28,17 @@ body{
     background-color: #ffac00;   
     transition: transform 0.3s ease;
 }
-.about-button:hover{
-    background: url(./Images/glasses2.png);
-    background-color: rgb(226, 17, 226);
-    background-size: 90%;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* animation-play-state: running; */
-    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
-    transform: translate(5px, 5px);
+@media (hover: hover) {
+    .about-button:hover{
+        background: url(./Images/glasses2.png);
+        background-color: rgb(226, 17, 226);
+        background-size: 90%;
+        background-position: center;
+        background-repeat: no-repeat;
+        /* animation-play-state: running; */
+        box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+        transform: translate(5px, 5px);
+    }
 }
 .about-button-clicked{
     position: absolute;
@@ -81,15 +56,17 @@ body{
     /* animation-play-state: running; */
     transition: transform 0.3s ease;
 }
-.about-button-clicked:hover{
-    background: url(./Images/glasses.png);
-    background-color: #ffac00;   
-    background-size: 70%;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* animation-play-state: running; */
-    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
-    transform: translate(5px, 5px);
+@media (hover: hover) {
+    .about-button-clicked:hover{
+        background: url(./Images/glasses.png);
+        background-color: #ffac00;   
+        background-size: 70%;
+        background-position: center;
+        background-repeat: no-repeat;
+        /* animation-play-state: running; */
+        box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+        transform: translate(5px, 5px);
+    }
 }
 @keyframes bgColor{
     0%{
@@ -134,23 +111,25 @@ body{
     cursor: pointer;
     transition: transform 0.3s ease;
 }
-#header-container-four:hover{
-    background: url(./Images/home-filled-white.png);
-    background-size: 45%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #c5183b;   
-    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
-    transform: translate(5px, 5px);
-}
-#header-container-eight:hover{
-    background: url(./Images/home-filled-white.png);
-    background-size: 45%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #3b919b;   
-    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
-    transform: translate(5px, 5px);
+@media (hover: hover) {
+    #header-container-four:hover{
+        background: url(./Images/home-filled-white.png);
+        background-size: 45%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #c5183b;   
+        box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+        transform: translate(5px, 5px);
+    }
+    #header-container-eight:hover{
+        background: url(./Images/home-filled-white.png);
+        background-size: 45%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #3b919b;   
+        box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+        transform: translate(5px, 5px);
+    }
 }
 .home-container{
     background-color: white;
@@ -206,16 +185,18 @@ body{
     cursor: pointer;
     transition: transform 0.3s ease;
 }
-.grid-button:hover, .mode-button:hover{
-    color: white;
-    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
-    transform: translate(5px, 5px);
-}
-#four-button:hover, #custom-room-button:hover{
-    background-color: #c5183b;
-}
-#eight-button:hover, #vs-comp-button:hover{
-    background-color: #3b919b;
+@media (hover: hover) {
+    .grid-button:hover, .mode-button:hover{
+        color: white;
+        box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+        transform: translate(5px, 5px);
+    }
+    #four-button:hover, #custom-room-button:hover{
+        background-color: #c5183b;
+    }
+    #eight-button:hover, #vs-comp-button:hover{
+        background-color: #3b919b;
+    }
 }
 #four-button-chosen{
     background-color: #c5183b;
@@ -341,38 +322,40 @@ body{
     background-color:rgb(0, 0, 0);
     border: solid 1px white;
 }
-#draw-winner-container:hover{
-    border: none;
-}
-.winner-container:hover{
-    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
-    transform: translate(5px, 5px);
-}
-.winner-container:hover:before{
-    opacity: 1; 
-    transform: translate(0,0);
-}
-.winner-container:before{
-    content: attr(data-hover);
-    position: absolute;
-    top: 1.1em; 
-    left: 0;
-    width: 100%;
-    font-family: -apple-system, BlinkMacSystemFont,
-                 'Segoe UI', Roboto, Oxygen, Ubuntu,
-                 Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-weight: bolder;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-align: center;
-    opacity: 0;
-    transform: translate(100%,0);
-    transition: all 0.2s ease-in-out;
-}
-.winner-container:hover .winner-text-container{
-    opacity: 0; 
-    transform: translate(-100%,0)
+@media (hover: hover) {
+    #draw-winner-container:hover{
+        border: none;
+    }
+    .winner-container:hover{
+        box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+        transform: translate(5px, 5px);
+    }
+    .winner-container:hover:before{
+        opacity: 1; 
+        transform: translate(0,0);
+    }
+    .winner-container:before{
+        content: attr(data-hover);
+        position: absolute;
+        top: 1.1em; 
+        left: 0;
+        width: 100%;
+        font-family: -apple-system, BlinkMacSystemFont,
+                    'Segoe UI', Roboto, Oxygen, Ubuntu,
+                    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-weight: bolder;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-align: center;
+        opacity: 0;
+        transform: translate(100%,0);
+        transition: all 0.2s ease-in-out;
+    }
+    .winner-container:hover .winner-text-container{
+        opacity: 0; 
+        transform: translate(-100%,0)
+    }
 }
 .score{
     margin: 0;
@@ -455,25 +438,27 @@ body{
 .big-grid-box-i-red, .big-grid-box-ui-red, .big-grid-box-i-blue, .big-grid-box-ui-blue{
     width: 50px;
 }
-.horizontal-bar-i-red:hover, .vertical-bar-i-red:hover{
-    opacity: 0.5;
-    background-color: #c5183b;
-    cursor: pointer;
-}
-.big-grid-horizontal-bar-i-red:hover, .big-grid-vertical-bar-i-red:hover{
-    opacity: 0.5;
-    background-color: #c5183b;
-    cursor: pointer;
-}
-.horizontal-bar-i-blue:hover, .vertical-bar-i-blue:hover{
-    opacity: 0.5;
-    background-color: #3b919b;
-    cursor: pointer;
-}
-.big-grid-horizontal-bar-i-blue:hover, .big-grid-vertical-bar-i-blue:hover{
-    opacity: 0.5;
-    background-color: #3b919b;
-    cursor: pointer;
+@media (hover: hover) {
+    .horizontal-bar-i-red:hover, .vertical-bar-i-red:hover{
+        opacity: 0.5;
+        background-color: #c5183b;
+        cursor: pointer;
+    }
+    .big-grid-horizontal-bar-i-red:hover, .big-grid-vertical-bar-i-red:hover{
+        opacity: 0.5;
+        background-color: #c5183b;
+        cursor: pointer;
+    }
+    .horizontal-bar-i-blue:hover, .vertical-bar-i-blue:hover{
+        opacity: 0.5;
+        background-color: #3b919b;
+        cursor: pointer;
+    }
+    .big-grid-horizontal-bar-i-blue:hover, .big-grid-vertical-bar-i-blue:hover{
+        opacity: 0.5;
+        background-color: #3b919b;
+        cursor: pointer;
+    }
 }
 
 /* Rooms Screen 1 */
@@ -514,8 +499,10 @@ body{
     transition: all 0.1s ease;
     box-shadow: 5px 5px 0px 1px black;
 }
-.room-input:hover{
-    background-color: #ffac00;
+@media (hover: hover) { 
+    .room-input:hover{
+        background-color: #ffac00;
+    }
 }
 .create-room, .join-room{
     border: none;
@@ -536,19 +523,21 @@ body{
 .create-room::after{
     content: "Create Room";
 }
-.create-room:hover, .join-room:hover{
-    transform: translate(5px, 5px);
-    box-shadow: 0px 0px 0px 2px black;
-    color: white;
-}
-.create-room:hover{
-    background-color: #c5183b;
-}
-.create-room:hover::after{
-    content: "Share ID";
-}
-.join-room:hover{
-    background-color: #3b919b;
+@media (hover: hover) {
+    .create-room:hover, .join-room:hover{
+        transform: translate(5px, 5px);
+        box-shadow: 0px 0px 0px 2px black;
+        color: white;
+    }
+    .create-room:hover{
+        background-color: #c5183b;
+    }
+    .create-room:hover::after{
+        content: "Share ID";
+    }
+    .join-room:hover{
+        background-color: #3b919b;
+    }
 }
 .room-id-container{
     font-family: -apple-system, BlinkMacSystemFont,
@@ -570,16 +559,18 @@ body{
     transition: transform 0.3s ease;
 
 }
-.room-id-container:hover span{
-    display: none;
-}
-.room-id-container:hover::before{
-    content: "COPY";
-}
-.room-id-container:hover{
-    cursor: pointer;
-    transform: translate(5px, 5px);
-    box-shadow: 0px 0px 0px 2px black;
+@media (hover: hover) {
+    .room-id-container:hover span{
+        display: none;
+    }
+    .room-id-container:hover::before{
+        content: "COPY";
+    }
+    .room-id-container:hover{
+        cursor: pointer;
+        transform: translate(5px, 5px);
+        box-shadow: 0px 0px 0px 2px black;
+    }
 }
 .room-id-statement{
     margin-top: 40px;
@@ -700,14 +691,16 @@ body{
     transition: all 0.2s ease;
     margin-left: 0px;
 }
-.priyanshu-modi-text:hover{
-    text-transform: uppercase;
-    margin-left: 3px;
-}
-.priyanshu-modi-text:hover::before{
-    content: "🧢";
-    margin-right: 5px;
-    font-size: 10px;
+@media (hover: hover) {
+    .priyanshu-modi-text:hover{
+        text-transform: uppercase;
+        margin-left: 3px;
+    }
+    .priyanshu-modi-text:hover::before{
+        content: "🧢";
+        margin-right: 5px;
+        font-size: 10px;
+    }
 }
 .chat-outer-container{
     position: absolute;
@@ -811,9 +804,11 @@ body{
                 Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 14px;
 }
-.pretyped-message:hover{
-    cursor: pointer;
-    background-color:rgb(228, 228, 228);
+@media (hover: hover) {
+    .pretyped-message:hover{
+        cursor: pointer;
+        background-color:rgb(228, 228, 228);
+    }
 }
 .chat-input-container{
     width: 100%;
@@ -837,8 +832,10 @@ body{
     transition: all 0.1s ease;
     box-shadow: 5px 5px 0px 1px black;
 }
-.chat-input:hover{
-    background-color: #ffac00;
+@media (hover: hover) {
+    .chat-input:hover{
+        background-color: #ffac00;
+    }
 }
 .chat-send-button{
     border: none;
@@ -857,14 +854,15 @@ body{
     cursor: pointer;
     transition: transform 0.3s ease;
 }
-.chat-send-button:hover{
-    transform: translate(5px, 5px);
-    /* background-color: black; */
-    /* border: 1px solid white ; */
-    box-shadow: 0px 0px 0px 2px black;
-    /* color: black; */
+@media (hover: hover) {
+    .chat-send-button:hover{
+        transform: translate(5px, 5px);
+        /* background-color: black; */
+        /* border: 1px solid white ; */
+        box-shadow: 0px 0px 0px 2px black;
+        /* color: black; */
+    }
 }
-
 .chat-button-container-red{
     width: 70px;
     height: 60px;
@@ -891,10 +889,12 @@ body{
     box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
     transition: transform 0.3s ease;
 }
-.chat-button-container-red:hover, .chat-button-container-blue:hover{
-    cursor: pointer;
-    box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
-    transform: translate(5px, 5px);
+@media (hover: hover) {
+    .chat-button-container-red:hover, .chat-button-container-blue:hover{
+        cursor: pointer;
+        box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+        transform: translate(5px, 5px);
+    }
 }
 .chat-button{
     background: url("../src/Images/chat-empty.png");
@@ -904,11 +904,13 @@ body{
     width: 100%;
     height: 100%;
 }
-.chat-button:hover{
-    background: url("../src/Images/chat-filled.png");
-    background-size: 50%;
-    background-position: center;
-    background-repeat: no-repeat;
+@media (hover: hover) {
+    .chat-button:hover{
+        background: url("../src/Images/chat-filled.png");
+        background-size: 50%;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
 }
 .unread-count-container{
     background-color: #ffac00;
@@ -922,4 +924,99 @@ body{
     position: relative;
     bottom: 12%;
     right: 8%;
+}
+.last-move-button{
+    position: absolute;
+    top: 3%;
+    right: 2%;
+    width: 70px;
+    height: 60px;
+    box-shadow: 5px 5px 0px 1px rgb(0, 0, 0);
+    background-color: #ffac00;   
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont,
+                'Segoe UI', Roboto, Oxygen, Ubuntu,
+                Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center
+}
+.last-move-button::after{
+    content: "LAST MOVE"
+}
+@media (hover: hover) {
+    .last-move-button:hover{
+        background: url(./Images/last-move.png);
+        background-color: rgb(226, 17, 226);
+        background-size: 50%;
+        background-position: center;
+        background-repeat: no-repeat;
+        box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+        transform: translate(5px, 5px);
+    }
+    .last-move-button:hover::after{
+        /* background: url(./Images/last-move.png);
+        background-color: rgb(226, 17, 226);
+        background-size: 50%;
+        background-position: center;
+        background-repeat: no-repeat;
+        box-shadow: 0px 0px 0px 2px rgb(0, 0, 0);
+        transform: translate(5px, 5px); */
+        content: "";
+    }
+}
+.dont-leave-page-container{
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dont-leave-page-text{
+    width: 60%;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont,
+                'Segoe UI', Roboto, Oxygen, Ubuntu,
+                Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    line-height: 25px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: white;
+    padding: 10px;
+    background-color: #c5183b;
+    border: solid 1px black;
+}
+
+@media screen and (max-width: 768px) {
+    html{
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        color: black;
+    }
+    #root{
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    #eight-button{
+        display: none;
+    }
+    .mode-button{
+        margin: 0px 5px;
+    }
+       
 }

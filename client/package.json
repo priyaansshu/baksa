@@ -18,12 +18,13 @@
     "react-dom": "^17.0.2",
     "react-lineto": "^3.3.0",
     "react-router-dom": "^6.2.1",
+    "react-screentype-hook": "^1.0.18",
     "react-scripts": "5.0.0",
     "react-spring": "^9.5.2",
     "react-toastify": "^9.0.5",
     "save-dev": "^0.0.1-security",
-    "socket.io": "^4.4.1",
-    "socket.io-client": "^4.4.1",
+    "socket.io": "^4.5.1",
+    "socket.io-client": "^4.5.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
