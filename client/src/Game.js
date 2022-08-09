@@ -841,7 +841,7 @@ export default function Game(props) {
           <h2 className="score" id={turn==red?"turn-score-red":"score-red"}>Red: {redScore}</h2>
           <h2 className="score" id={turn==blue?"turn-score-blue":"score-blue"}>Blue: {blueScore}</h2>
         </div>
-        {assignedColor==turn&& !gameOver? 
+        {assignedColor==turn && !gameOver && !props.vsComp? 
           <div className={assignedColor=="#c5183b"?"yourTurnText-red":"yourTurnText-blue"}>
             <div className="baksa-image-container">
             </div>
