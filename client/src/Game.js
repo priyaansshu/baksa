@@ -335,7 +335,7 @@ export default function Game(props) {
     }
     // console.log("tempBoxCount: "+tempBoxCount);
     if(props.gridSize == 4){
-      if(tempBoxCount == 1){
+      if(tempBoxCount == 16){
         setGameOver(true);
         // history("/gameover")
         // props.setTempGameOverVariable(true);
@@ -807,11 +807,13 @@ export default function Game(props) {
           </div>
       </div> */}
       <Header gridSize={props.gridSize} gameOver={gameOver} fromMidGame={true} vsComp={props.vsComp}/>
-      <div className="last-move-button" onClick={()=>{
-        // console.log(movesArr[movesArr.length-1])
-        setShowLastMove(true);
-      }}>
-      </div>
+      {!gameOver?  
+        <div className="last-move-button" onClick={()=>{
+          setShowLastMove(true);
+        }}>
+        </div>
+        :null
+      }
       <div className="center-container">
         <div className={!gameOver?"show-grid":"hide-grid"} ref={gridRef}>
           <Grid 
