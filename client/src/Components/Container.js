@@ -29,6 +29,9 @@ export default function Container(props) {
                                 tempId={props.tempId}
                                 assignedColor={props.assignedColor}
                                 notTurnFunc = {props.notTurnFunc}
+                                showLastMove = {props.showLastMove}
+                                setShowLastMove = {props.setShowLastMove}
+                                movesArr = {props.movesArr}
                             />)
             }   
         }
@@ -50,6 +53,9 @@ export default function Container(props) {
                                 tempId={props.tempId}
                                 assignedColor={props.assignedColor}
                                 notTurnFunc = {props.notTurnFunc}
+                                showLastMove = {props.showLastMove}
+                                setShowLastMove = {props.setShowLastMove}
+                                movesArr = {props.movesArr}
                             />)
             }
         }

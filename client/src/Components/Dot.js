@@ -43,13 +43,54 @@ export default function Dot(props) {
     if(!props.vsComp){
       if(props.tempId == props.elementId){
         elRef.current.style.backgroundColor = props.tempColor;
+        // elRef.current.style.backgroundColor = "#ffac00";
       }
     }
   })();
 
-  // (()=>{
-  //   setTurn(props.turn=="#c5183b"?"red":"blue");
-  // })();
+  useEffect(()=>{
+    if(props.showLastMove){
+      if(props.elementId==props.movesArr[props.movesArr.length-1]){
+        // elRef.current.style.boxShadow = "0px 0px 20px "+elRef.current.style.backgroundColor
+        elRef.current.style.transition = "all 0.3s ease"
+        elRef.current.style.transform = "scale(1.2)"
+        // elRef.current.style.backgroundColor = "#ffac00 !important"
+        console.log(elRef.current)
+      }
+      setTimeout(()=>{
+        if(props.elementId==props.movesArr[props.movesArr.length-1]){
+          elRef.current.style.boxShadow = "none" 
+          elRef.current.style.transform = "scale(1)"
+        }
+      }, 200)
+      setTimeout(()=>{
+        if(props.elementId==props.movesArr[props.movesArr.length-1]){
+          // elRef.current.style.boxShadow = "0px 0px 20px "+elRef.current.style.backgroundColor 
+          elRef.current.style.transform = "scale(1.2)"
+        }
+      }, 400)
+      setTimeout(()=>{
+        if(props.elementId==props.movesArr[props.movesArr.length-1]){
+          elRef.current.style.boxShadow = "none" 
+          elRef.current.style.transform = "scale(1)"
+        }
+      }, 600)
+      setTimeout(()=>{
+        if(props.elementId==props.movesArr[props.movesArr.length-1]){
+          // elRef.current.style.boxShadow = "0px 0px 20px "+elRef.current.style.backgroundColor 
+          elRef.current.style.transform = "scale(1.2)"
+        }
+      }, 800)
+      setTimeout(()=>{
+        if(props.elementId==props.movesArr[props.movesArr.length-1]){
+          elRef.current.style.boxShadow = "none"
+          elRef.current.style.transform = "scale(1)" 
+          props.setShowLastMove(false);
+          // console.log(elRef.current)
+        }
+      }, 1000)
+    }
+  }, [props.showLastMove])
 
   useEffect(()=>{
     setTurn(props.turn=="#c5183b"?"red":"blue");
@@ -62,7 +103,11 @@ export default function Dot(props) {
             className={props.gridSize==4?(props.elementName+"-"+canInteract+"-"+turn):"big-grid-"+(props.elementName+"-"+canInteract+"-"+turn)}
             id={props.elementId} 
             style={
-              props.elementId.charAt(0)==="b"?{backgroundColor: props.boxMap.get(props.elementId), opacity: "0.5"}:
+              props.elementId.charAt(0)==="b"?
+              {backgroundColor: props.boxMap.get(props.elementId), opacity: "0.5"}:
+                // props.showLastMove?props.elementId===props.movesArr[props.movesArr.length-1]?
+                // {backgroundColor: "#ffac00"}:
+                // null:
               null
             }
             onClick={(e)=>{

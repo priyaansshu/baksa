@@ -25,6 +25,9 @@ export default function Grid(props) {
                                     tempId={props.tempId}
                                     assignedColor={props.assignedColor}
                                     notTurnFunc = {props.notTurnFunc}
+                                    showLastMove = {props.showLastMove}
+                                    setShowLastMove = {props.setShowLastMove}
+                                    movesArr = {props.movesArr}
                             />)
         }
     })()

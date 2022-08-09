@@ -5,6 +5,7 @@ const io = require("socket.io")(server, {
         origin: "*"
     }
 })
+require('dotenv').config()
 
 io.on("connection", socket =>{
     socket.io = io;
@@ -42,6 +43,9 @@ io.on("connection", socket =>{
     });
 
     socket.on("update", ({turn, roomId, socketId, position, tempId, tempBoxColor})=>{
+        console.log(socket.id)
+        console.log("here")
+        console.log(roomId)
         socket.to(roomId).emit("updated", {turn, position, tempId, tempBoxColor});
     })
     socket.on("send-message", ({roomId, tempMessage, playerRole}) => {
@@ -52,7 +56,7 @@ io.on("connection", socket =>{
         const roomSockets = rooms.get(roomId);
         if(roomSockets!=undefined){
             const numClients = roomSockets.size;
-            // console.log(numClients);
+            console.log(numClients);
             if(numClients<2){
                 // const tempWinner = [...roomSockets][0];
                 const winner = playerRole==1?"red":"blue";

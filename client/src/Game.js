@@ -10,10 +10,12 @@ import {io} from "socket.io-client";
 import { ToastContainer, toast } from 'react-toastify';
 import { css } from "glamor";
 import Chat from './Components/Chat';
-import { useNavigate } from 'react-router-dom';
+import {Route, Link, Routes, Navigate, useNavigate} from "react-router-dom";
 import { useBeforeunload } from 'react-beforeunload';
+import useScreenType from "react-screentype-hook";
 
-const socket = io('http://localhost:4000');
+const socket = io('https://baksa19.herokuapp.com/', { transports : ['websocket'] });
+// const socket = io('http://localhost:4000');
 
 export default function Game(props) {
   var i, j;
@@ -50,16 +52,24 @@ export default function Game(props) {
   const chatRef = useRef();
   const gridRef = useRef();
   const chatButtonRef = useRef();
+  const yourTurnRef = useRef();
 
   const [gameLeaveWinner, setGameLeaveWinner] = useState("none");
   const [playerLeft, setPlayerLeft] = useState(false);
+  const [playerOnMobile, setPlayerOnMobile] = useState();
+  const [opponentOnMobile, setOpponentOnMobile] = useState();
   const [ locationKeys, setLocationKeys ] = useState([])
+  const screenType = useScreenType();
   const history = useNavigate()
+  var localTurn;
+
+  const [movesArr, setMovesArr] = useState([]);
+  const [showLastMove, setShowLastMove] = useState(false);
 
   var t; // variable for temporarily handling id
   var tempTurn; // variable for temporarily handling turn
   var tempBoxColor="";
-
+  // var tempTimeoutId;
 
   useEffect(()=>{
     var curUrl = JSON.stringify(window.location.href);
@@ -69,13 +79,13 @@ export default function Game(props) {
   }, [])
 
   useEffect(()=>{
+    console.log(props.socketId)
     var tempRoomId = props.roomId+"1";
     socket.emit("rejoin", {roomId: tempRoomId});
   }, [])
 
   useEffect(()=>{
     socket.on("final-room", ({roomId})=>{
-      // console.log(roomId);
       setFinalRoomId(roomId);
     })
   }, [socket]);
@@ -91,6 +101,11 @@ export default function Game(props) {
     socket.on("updated", (data)=>{
       position = data.position;
       tempBoxColor = data.tempBoxColor;
+
+      var tempMovesArr = [...movesArr];
+      tempMovesArr.push(data.tempId);
+      setMovesArr(tempMovesArr);
+
       updateLocalVariablesWithServerValues(data.tempId, data.turn);
       elementCheckUtilityFunction(position, data.tempId);
     });
@@ -99,6 +114,7 @@ export default function Game(props) {
   function updateLocalVariablesWithServerValues(tempId, tempColor){
     setTempId(tempId);
     setTempColor(tempColor);
+    localTurn = tempColor;
   }
 
   (function initMap(){
@@ -144,11 +160,23 @@ export default function Game(props) {
   }
 
   function elementCheck(id){
-    console.log(elMap);
+    // console.log(tempTimeoutId)
+    // if(yourTurnRef.current.style.display==="flex"){
+    //   yourTurnRef.current.style.display = "none"
+    // }
+    // if(tempTimeoutId){
+    //   clearTimeout(tempTimeoutId);
+    // }
+    if(props.vsComp){
+      var tempMovesArr = [...movesArr];
+      tempMovesArr.push(id);
+      setMovesArr(tempMovesArr);
+    }
+    // console.log(elMap);
     t=id;
     tempBoxColor=""
     position = calcPosition(id);
-    console.log(position);
+    // console.log(position);
     elementCheckUtilityFunction(position, id);
     tempTurn = turn;
     if(!props.vsComp)
@@ -209,7 +237,7 @@ export default function Game(props) {
     }
 
     if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-        console.log("upper and lower boxes filled");
+        // console.log("upper and lower boxes filled");
       setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
       stayTurn(boxColor);
@@ -218,14 +246,14 @@ export default function Game(props) {
       updateTotal();
     }
     else if(elMap.get(pos1)=="clicked" && elMap.get(pos3)== "clicked" && elMap.get(pos4)=="clicked"){
-        console.log("upper box filled");
+        // console.log("upper box filled");
       setBoxMap(boxMap.set(("b-"+(n-1)+"-"+m), boxColor));
       stayTurn(boxColor);
       updateScore(("b-"+(n-1)+"-"+m));
       updateTotal();
     }
     else if(elMap.get(pos2)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-        console.log("lower box filled");
+        // console.log("lower box filled");
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
       stayTurn(boxColor);
       updateScore(("b-"+n+"-"+m));
@@ -262,7 +290,7 @@ export default function Game(props) {
     }
 
     if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked" && elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-      console.log("left and right boxes filled");
+      // console.log("left and right boxes filled");
       setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
       stayTurn(boxColor);
@@ -271,14 +299,14 @@ export default function Game(props) {
       updateTotal();
     }
     else if(elMap.get(pos1)=="clicked" && elMap.get(pos2)== "clicked" && elMap.get(pos3)=="clicked"){
-      console.log("left box filled");
+      // console.log("left box filled");
       setBoxMap(boxMap.set("b-"+n+"-"+(m-1), boxColor));
       stayTurn(boxColor);
       updateScore(("b-"+n+"-"+(m-1)));
       updateTotal();
     }
     else if(elMap.get(pos4)== "clicked" && elMap.get(pos5)=="clicked" && elMap.get(pos6)== "clicked"){
-      console.log("right box filled");
+      // console.log("right box filled");
       setBoxMap(boxMap.set(("b-"+n+"-"+m), boxColor));
       stayTurn(boxColor);
       updateScore(("b-"+n+"-"+m));
@@ -305,15 +333,19 @@ export default function Game(props) {
         tempBoxCount++;
       }
     }
-    console.log("tempBoxCount: "+tempBoxCount);
+    // console.log("tempBoxCount: "+tempBoxCount);
     if(props.gridSize == 4){
-      if(tempBoxCount == 16){
+      if(tempBoxCount == 1){
         setGameOver(true);
+        // history("/gameover")
+        // props.setTempGameOverVariable(true);
       }
     }
     else if(props.gridSize == 8){
       if(tempBoxCount == 64){
         setGameOver(true);
+        // history("/gameover")
+        // props.setTempGameOverVariable(true);
       }
     }    
     // console.log("totalScore: "+(redScore+blueScore));
@@ -604,11 +636,11 @@ export default function Game(props) {
     if(curUrl.substring(curUrl.length-8, curUrl.length-1)=="offline"){
       tempVsComp = true;
     }
-    if(!tempVsComp && !gameOver){
+    if(!tempVsComp && gridRef.current.className === "show-grid"){
       var playerColor = assignedColor=="#c5183b"?"Red":"Blue";
       playerColorToastId.current = toast("You are "+playerColor, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: false,
@@ -616,7 +648,7 @@ export default function Game(props) {
         progress: undefined,
       });  
     }
-  }, [gameOver, props.vsComp, ]);
+  }, []);
 
   function notTurnFunc(){
     toast("It's not your turn", {
@@ -630,6 +662,29 @@ export default function Game(props) {
     }); 
   }
 
+  // const yourTurnToastId = useRef(null);
+  // useEffect(()=>{
+  //   setTimeout(()=>{
+  //     console.log(gridRef.current.className)
+  //     if(assignedColor == turn && !props.vsComp && gridRef.current.className === "show-grid"){
+  //       if(yourTurnToastId.current!=null){
+  //         toast.dismiss(yourTurnToastId.current)
+  //       }
+  //       setTimeout(()=>{
+  //         yourTurnToastId.current = toast("It's your turn", {
+  //           position: "top-right",
+  //           autoClose: 5000,
+  //           hideProgressBar: true,
+  //           closeOnClick: true,
+  //           pauseOnHover: false,
+  //           draggable: true,
+  //           progress: undefined,
+  //         }); 
+  //       }, 5000)
+  //     }
+  //   } , 1000)
+  // }, [turn])
+
   function sendMessage(tempMessage, playerRole){
     if(tempMessage==""){
         return;
@@ -639,18 +694,15 @@ export default function Game(props) {
 
   socket.off("receive-message");
   socket.on("receive-message", (tempMessage, playerRole)=>{
-      console.log("message received");
+      // console.log("message received");
 
       const tempMessageArr = [...messageArr];
       tempMessageArr.push({sender: playerRole, message: tempMessage});
-      console.log(tempMessageArr);
+      // console.log(tempMessageArr);
       setMessageArr(tempMessageArr);
     })
 
     useEffect(()=>{
-      // if(playerColorToastId.current!=null && showChat){
-      //   toast.dismiss(playerColorToastId.current);
-      // }
       if(showChat){
         setLastSeen(messageArr.length);
         setUnreadCount(0);
@@ -686,8 +738,9 @@ export default function Game(props) {
 
     // socket.off("game-left");
     useEffect(()=>{
-      if(!props.vsComp){
-        !gameOver && socket.on("game-left", ({winner})=>{
+      // console.log(gridRef.current.className);
+      if(!props.vsComp && gridRef.current.className === "show-grid"){
+        socket.on("game-left", ({winner})=>{
           console.log("The other player left the game");
           setPlayerLeft(true);
           setGameOver(true);
@@ -696,16 +749,26 @@ export default function Game(props) {
       }
     }, [socket])
 
+    // useEffect(()=>{
+      // console.log("playerLeft: "+playerLeft);
+      // if(playerLeft){
+      //   clearInterval(intervalId);
+      // }
+    // }, [playerLeft])
+
     useEffect(()=>{
-      if(!props.vsComp){
+      if(!props.vsComp && !playerLeft && gridRef.current.className==="show-grid"){
         var tempRoomId = finalRoomId;
         if(!playerLeft){
-          const intervalId = setInterval(() => {
-            socket.emit("game-leave-check", ({playerRole: props.playerRole, roomId: tempRoomId}))
-          }, 2000);
+          const tempId = setInterval(() => {
+            // console.log(gridRef.current.className)
+            if(gridRef.current.className === "show-grid"){
+              socket.emit("game-leave-check", ({playerRole: props.playerRole, roomId: tempRoomId}))
+            }
+          }, 10000);
         }
       }
-    }, [finalRoomId])
+    }, [finalRoomId, playerLeft])
 
     window.addEventListener('popstate', (event) => {
       if (event.state) {
@@ -718,9 +781,37 @@ export default function Game(props) {
       window.history.pushState({name: "browserBack"}, "on browser back click", window.location.href);
     }, []);
 
+    useEffect(()=>{
+      if(showLastMove){
+        setTimeout(()=>{
+          setShowLastMove(false);
+        })
+      }
+    }, [showLastMove])
+
+    // useEffect(()=>{
+    //   if(gridRef.current.className==="show-grid" && assignedColor===turn && !props.vsComp){
+    //     tempTimeoutId = setTimeout(()=>{
+    //       yourTurnRef.current.style.display = "flex";
+
+    //       console.log(yourTurnRef.current.style.display)
+    //     }, 5000)
+    //   }
+    // }, [turn])
+
   return (
     <>
+      {/* <div className="dont-leave-page-container" ref={yourTurnRef} style={{display: "none"}}>
+          <div className="dont-leave-page-text">
+              It's your turn 
+          </div>
+      </div> */}
       <Header gridSize={props.gridSize} gameOver={gameOver} fromMidGame={true} vsComp={props.vsComp}/>
+      <div className="last-move-button" onClick={()=>{
+        // console.log(movesArr[movesArr.length-1])
+        setShowLastMove(true);
+      }}>
+      </div>
       <div className="center-container">
         <div className={!gameOver?"show-grid":"hide-grid"} ref={gridRef}>
           <Grid 
@@ -734,6 +825,9 @@ export default function Game(props) {
             tempId={tempId}
             assignedColor={assignedColor}
             notTurnFunc = {notTurnFunc}
+            showLastMove = {showLastMove}
+            setShowLastMove = {setShowLastMove}
+            movesArr = {movesArr}
           />
         </div>
 
@@ -745,6 +839,14 @@ export default function Game(props) {
           <h2 className="score" id={turn==red?"turn-score-red":"score-red"}>Red: {redScore}</h2>
           <h2 className="score" id={turn==blue?"turn-score-blue":"score-blue"}>Blue: {blueScore}</h2>
         </div>
+        {assignedColor==turn&& !gameOver? 
+          <div className={assignedColor=="#c5183b"?"yourTurnText-red":"yourTurnText-blue"}>
+            <div className="baksa-image-container">
+            </div>
+            It's your turn
+          </div>
+          :null
+        }
       </div>
     {!props.vsComp&&<div className={assignedColor==red?"chat-button-container-red":"chat-button-container-blue"}>
       <div ref={chatButtonRef} className="chat-button" onClick={()=>{
