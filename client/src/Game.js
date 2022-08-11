@@ -117,9 +117,34 @@ export default function Game(props) {
 
   (function initMap(){
     if(mapFlag){
-      var tempSize = props.gridSize==4?65:225;
+      var tempGridSize;
+      var curUrl = JSON.stringify(window.location.href);
+      if(props.playerRole==2){
+        if(curUrl[curUrl.length-1]=='/'){
+          if(curUrl[curUrl.length-2]!='8'){
+            tempGridSize=4; 
+          }
+          else{
+            tempGridSize=8;
+          }
+        }
+        else{
+          if(curUrl[curUrl.length-1]!='8'){
+            tempGridSize=4;
+          }
+          else{
+            tempGridSize=8;
+          }
+        }
+      }
+
+      if(props.playerRole==1){
+        var tempSize = props.gridSize==4?65:225;
+      }
+      else{
+        var tempSize = tempGridSize==4?65:225;
+      }
       for(i=0; i<tempSize; ++i){
-      // for(i=0; i<props.gridSize==4?65:225; ++i){
         elMap.set(i, "unclicked");
       }
       setMapFlag(false);
@@ -128,10 +153,36 @@ export default function Game(props) {
 
   (function initBoxMap(){
     if(boxFlag){
-      for(i=1; i<=props.gridSize; ++i){
-      // for(i=1; i<=4; ++i){
-        for(j=1; j<=props.gridSize; ++j)
-        // for(j=1; j<=4; ++j)
+      var tempGridSize;
+      var curUrl = JSON.stringify(window.location.href);
+      if(props.playerRole==2){
+        if(curUrl[curUrl.length-1]=='/'){
+          if(curUrl[curUrl.length-2]!='8'){
+            tempGridSize=4; 
+          }
+          else{
+            tempGridSize=8;
+          }
+        }
+        else{
+          if(curUrl[curUrl.length-1]!='8'){
+            tempGridSize=4;
+          }
+          else{
+            tempGridSize=8;
+          }
+        }
+      }
+
+      if(props.playerRole==1){
+        var tempSize = props.gridSize;
+      }
+      else{
+        var tempSize = tempGridSize;
+      }
+
+      for(i=1; i<=tempSize; ++i){
+        for(j=1; j<=tempSize; ++j)
           boxMap.set("b-"+i+"-"+j, "transparent");
       }
       setBoxFlag(false);
@@ -355,6 +406,7 @@ export default function Game(props) {
     if(props.playerRole==1){
       if(props.gridSize == 4){
         if(tempBoxCount == 16){
+          // console.log(boxMap);
           console.log("gameover")
           setGameOver(true);
         }
@@ -378,7 +430,10 @@ export default function Game(props) {
         }
       }    
     }
+
+    // console.log(boxMap);
   }
+
   // function compCheckVerticalBoxes(id, elRef){
   //   // console.log(id);
   //   var id1, id2, id3, id4, id5, id6;
@@ -861,7 +916,16 @@ export default function Game(props) {
         </div>
 
         <div className={!gameOver?"hide-game-over":"show-game-over"}>
-          <GameOver gameLeaveWinner={gameLeaveWinner} redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap} vsComp={props.vsComp} gameOver={gameOver} curRoomId={finalRoomId}/>
+          <GameOver 
+            gameLeaveWinner={gameLeaveWinner} 
+            redScore={redScore} 
+            blueScore={blueScore} 
+            gridSize={props.gridSize} 
+            boxMap={boxMap} 
+            vsComp={props.vsComp} 
+            gameOver={gameOver} 
+            curRoomId={finalRoomId}
+          />
         </div>
         {/* {console.log(turn)} */}
         <div className={!gameOver?"score-container":"hide-score-container"}>
