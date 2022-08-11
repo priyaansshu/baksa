@@ -23,7 +23,8 @@ export default function (props) {
     const history = useNavigate();
     const [urlRoomId, setUrlRoomId] = useState("");
     const screenType = useScreenType();
-    // var urlRoomId;
+
+    const inputRef = useRef(null);
 
     socket.on("start-game", (tempUrlRoomId)=>{
         if(playerRole==2){
@@ -155,6 +156,7 @@ export default function (props) {
                             {/* <Link to={"/"+roomId} style={{textDecoration: "none"}}> */}
                                 <div className="join-room-container">
                                     <input 
+                                        ref={inputRef}
                                         className="room-input" 
                                         type="text" 
                                         style={roomId!==""?{marginRight: "10px"}:{marginRight:"0px"}}
@@ -163,6 +165,19 @@ export default function (props) {
                                         }} 
                                         onKeyPress={(e)=>{
                                             if(e.key==="Enter"){
+                                                if(screenType.isMobile && roomId[roomId.length-1]=='8'){
+                                                    toast("Can't play 8x8 on mobile devices", {
+                                                        position: "top-right",
+                                                        autoClose: 1000,
+                                                        hideProgressBar: true,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: false,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                    });
+                                                    e.target.value="";
+                                                    return;
+                                                }
                                                 setPlayerRole(2)
                                                 socket.emit("joined-room", roomId);
                                             }
@@ -171,6 +186,19 @@ export default function (props) {
                                     {roomId!==""?
                                         <button className="join-room"   
                                             onClick={()=>{
+                                                if(screenType.isMobile && roomId[roomId.length-1]=='8'){
+                                                    toast("Can't play 8x8 on mobile devices", {
+                                                        position: "top-right",
+                                                        autoClose: 1000,
+                                                        hideProgressBar: true,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: false,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                    });
+                                                    inputRef.current.value="";
+                                                    return;
+                                                }
                                                 setPlayerRole(2);
                                                 socket.emit("joined-room", roomId)
                                             }}>

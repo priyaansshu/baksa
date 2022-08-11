@@ -679,8 +679,15 @@ body{
     flex-direction: column;
     justify-content: flex-start;
 }
-.credits-text{
+.credits-container{
     width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.credits-text{
+    width: fit-content;
     text-align: left;
     margin-top: 0px;
     font-family: "ralewayMedium";
@@ -691,6 +698,7 @@ body{
     cursor: pointer;
     transition: all 0.2s ease;
     margin-left: 0px;
+    font-weight: bolder;
 }
 @media (hover: hover) {
     .priyanshu-modi-text:hover{
@@ -701,6 +709,45 @@ body{
         content: "🧢";
         margin-right: 5px;
         font-size: 10px;
+    }
+}
+.social-icons-container{
+    width: fit-content;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.mail-icon{
+    width:30px;
+    height:30px;
+    background: url("../src/Images/mail.png");   
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    transition: all 0.3s ease;
+}
+.linkedin-icon{
+    width:30px;
+    height:30px;
+    background: url("../src/Images/linkedin.png");   
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    transition: all 0.3s ease;
+}
+.github-icon{
+    width:30px;
+    height:30px;
+    background: url("../src/Images/github.png");   
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    transition: all 0.3s ease;
+}
+@media (hover: hover) {
+    .mail-icon:hover, .linkedin-icon:hover, .github-icon:hover{
+        transform: scale(1.1);
+        cursor: pointer;
     }
 }
 .chat-outer-container{

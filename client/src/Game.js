@@ -14,8 +14,8 @@ import {Route, Link, Routes, Navigate, useNavigate} from "react-router-dom";
 import { useBeforeunload } from 'react-beforeunload';
 import useScreenType from "react-screentype-hook";
 
-const socket = io('https://baksa19.herokuapp.com/', { transports : ['websocket'] });
-// const socket = io('http://localhost:4000');
+// const socket = io('https://baksa19.herokuapp.com/', { transports : ['websocket'] });
+const socket = io('http://localhost:4000');
 
 export default function Game(props) {
   var i, j;
@@ -91,8 +91,6 @@ export default function Game(props) {
   }, [socket]);
 
   function updateMapWithServer(){
-    // console.log("received");
-    // socket.emit("test", {roomId: finalRoomId, socketId: props.socketId});
     socket.emit("update", {turn: tempTurn, roomId: finalRoomId, socketId: props.socketId, position: position, tempId: t, tempBoxColor: tempBoxColor});
   }
   
@@ -329,34 +327,58 @@ export default function Game(props) {
     tempBoxCount=0;
     for (const [key, value] of boxMap.entries()) {
       if(value!="transparent"){
-        // console.log(key+": "+value);
         tempBoxCount++;
       }
     }
-    // console.log("tempBoxCount: "+tempBoxCount);
-    if(props.gridSize == 4){
-      if(tempBoxCount == 16){
-        setGameOver(true);
-        // history("/gameover")
-        // props.setTempGameOverVariable(true);
+
+    var tempGridSize;
+    var curUrl = JSON.stringify(window.location.href);
+    if(props.playerRole==2){
+      if(curUrl[curUrl.length-1]=='/'){
+        if(curUrl[curUrl.length-2]!='8'){
+          tempGridSize=4; 
+        }
+        else{
+          tempGridSize=8;
+        }
+      }
+      else{
+        if(curUrl[curUrl.length-1]!='8'){
+          tempGridSize=4;
+        }
+        else{
+          tempGridSize=8;
+        }
       }
     }
-    else if(props.gridSize == 8){
-      if(tempBoxCount == 64){
-        setGameOver(true);
-        // history("/gameover")
-        // props.setTempGameOverVariable(true);
+
+    if(props.playerRole==1){
+      if(props.gridSize == 4){
+        if(tempBoxCount == 16){
+          console.log("gameover")
+          setGameOver(true);
+        }
       }
-    }    
-    // console.log("totalScore: "+(redScore+blueScore));
-    // if(props.gridSize == 4 && redScore+blueScore == 15){
-    //   setGameOver(true);
-    // }
-    // else if(props.gridSize == 8 && redScore+blueScore == 63){
-    //   setGameOver(true);
-    // }
+      else if(props.gridSize == 8){
+        if(tempBoxCount == 64){
+          setGameOver(true);
+        }
+      }    
+    }
+    else{
+      if(tempGridSize == 4){
+        if(tempBoxCount == 16){
+          console.log("gameover")
+          setGameOver(true);
+        }
+      }
+      else if(tempGridSize == 8){
+        if(tempBoxCount == 64){
+          setGameOver(true);
+        }
+      }    
+    }
   }
-  
   // function compCheckVerticalBoxes(id, elRef){
   //   // console.log(id);
   //   var id1, id2, id3, id4, id5, id6;
@@ -793,22 +815,24 @@ export default function Game(props) {
     }, [showLastMove])
 
     // useEffect(()=>{
-    //   if(gridRef.current.className==="show-grid" && assignedColor===turn && !props.vsComp){
-    //     tempTimeoutId = setTimeout(()=>{
-    //       yourTurnRef.current.style.display = "flex";
-
-    //       console.log(yourTurnRef.current.style.display)
-    //     }, 5000)
+    //   if(props.playerRole==2){
+    //     console.log("here1")
+    //     if(props.gridSize == 4){
+    //       if(tempBoxCount == 1){
+    //         setGameOver(true);
+    //         console.log("here2")
+    //       }
+    //     }
+    //     else if(props.gridSize == 8){
+    //       if(tempBoxCount == 64){
+    //         setGameOver(true);
+    //       }
+    //     }    
     //   }
-    // }, [turn])
+    // }, [socket, boxMap])
 
   return (
     <>
-      {/* <div className="dont-leave-page-container" ref={yourTurnRef} style={{display: "none"}}>
-          <div className="dont-leave-page-text">
-              It's your turn 
-          </div>
-      </div> */}
       <Header gridSize={props.gridSize} gameOver={gameOver} fromMidGame={true} vsComp={props.vsComp}/>
       {!gameOver?  
         <div className="last-move-button" onClick={()=>{
