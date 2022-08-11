@@ -48,7 +48,7 @@ export default function (props) {
             draggable: true,
             progress: undefined,
         });
-        console.log("room is full")
+        // console.log("room is full")
     })
     socket.off('room-does-not-exist').on("room-does-not-exist", ()=>{
         setRoomDoesNotExist(true);
@@ -56,7 +56,7 @@ export default function (props) {
 
     useEffect(()=>{ 
         if(roomDoesNotExist){
-            console.log("here");
+            // console.log("here");
             toast("Room does not exist", {
                 position: "top-right",
                 autoClose: 1000,
@@ -66,7 +66,7 @@ export default function (props) {
                 draggable: true,
                 progress: undefined,
             });
-            console.log("Room does not exist");
+            // console.log("Room does not exist");
             setRoomDoesNotExist(false);
         }
     }, [roomDoesNotExist])
@@ -108,7 +108,7 @@ export default function (props) {
 
     useEffect(()=>{
         var curUrl = JSON.stringify(window.location.href)
-        console.log(performance.getEntriesByType("navigation")[0].type, curUrl.substring(curUrl.length-6, curUrl.length-1));
+        // console.log(performance.getEntriesByType("navigation")[0].type, curUrl.substring(curUrl.length-6, curUrl.length-1));
         if(curUrl.substring(curUrl.length-6, curUrl.length-1)!="room/" && curUrl.substring(curUrl.length-5, curUrl.length-1)!="room"){
             history("/");
         }

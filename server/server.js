@@ -64,6 +64,16 @@ io.on("connection", socket =>{
             }
         }
     })
+    // socket.on("create-rematch-room", async ({curRoomId, tempNewRoomId})=>{
+    //     console.log(curRoomId);
+    //     const sockets = await io.of("/").in("room1").fetchSockets();
+    //     console.log(sockets);
+    //     socket.join(tempNewRoomId);
+    //     socket.broadcast.emit("new-room-id", {tempNewRoomId});
+    // })
+    // socket.on("join-rematch-room", ({newRoomId})=>{
+    //     socket.join(newRoomId);
+    // })
 })
 
 server.listen(process.env.PORT || 4000, ()=>{

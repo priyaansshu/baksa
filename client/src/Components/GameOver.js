@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import "../style.css"
 import {Route, Link, Routes, useNavigate} from "react-router-dom";
-import Game from "../Game.js"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Confetti from 'react-confetti'
+import {io} from "socket.io-client"
+
+// const socket = io('https://baksa19.herokuapp.com/', { transports : ['websocket'] });
+// const socket = io('http://localhost:4000', { transports : ['websocket'] });
 
 export default function GameOver(props) {
     var result;
@@ -13,6 +16,9 @@ export default function GameOver(props) {
     const [showShare, setShowShare] = useState("none");
     const [showConfetti, setShowConfetti] = useState(true);
     const [recycleConfetti, setRecycleConfetti] = useState(true);
+    const [startRematch, setStartRematch] = useState(false);
+    const [roomId, setRoomId] = useState();
+    const [playerRole, setPlayerRole] = useState();
     const history = useNavigate();
 
     const generateRandomString = (myLength) => {
@@ -81,7 +87,7 @@ export default function GameOver(props) {
             }
             i++;
         }   
-        console.log(message);
+        // console.log(message);
         navigator.clipboard.writeText(message);
     }
 
@@ -96,6 +102,19 @@ export default function GameOver(props) {
             progress: undefined,
         });  
     } 
+
+    // useEffect(()=>{
+    //     console.log("here");
+    //     socket.on("new-room-id", ({tempNewRoomId})=>{
+    //         console.log("new-room")
+    //         setRoomId(tempNewRoomId);
+    //         setPlayerRole(2);
+    //         history("/room/"+tempNewRoomId);
+    //         setStartRematch(true);
+    //         socket.emit("join-rematch-room", {tempNewRoomId});
+    //     })
+    // }, [socket]);
+
 
     // useEffect(()=>{
     //     if(props.gameOver){
@@ -132,8 +151,6 @@ export default function GameOver(props) {
             <div 
                 className="winner-container" 
                 id={result+"-winner-container"} 
-                // onMouseEnter={()=>{setHideWinner("none"); setShowShare("flex")}} 
-                // onMouseLeave={()=>{setHideWinner("flex"); setShowShare("none")}}
                 onClick={()=>{
                     resultCopied();
                     createEmoji();
@@ -152,20 +169,30 @@ export default function GameOver(props) {
                 </div>
             </div>
         </div>
-        <ToastContainer/>
-        {/* <Link to={"/game"}> */}
-            <button 
-                className="grid-button" 
-                id={props.gridSize==4?"four-button":"eight-button"} 
-                onClick={()=>{history("/")}}
-                >
-                Go Again
-            </button>
-        {/* </Link> */}
-        {/* {console.log(props.gridSize, props.vsComp)} */}
-        {/* <Routes>
-            <Route exact path={"/game"} element={<Game gridSize={props.gridSize} vsComp={props.vsComp}/>}/>
-        </Routes> */}
+        <button 
+            className="grid-button" 
+            id={props.gridSize==4?"four-button":"eight-button"} 
+            onClick={()=>{
+                history("/")
+                // var tempNewRoomId = generateRandomString(6);
+                // console.log(props.curRoomId);
+                // socket.emit("create-rematch-room", ({curRoomId: props.curRoomId, tempNewRoomId: tempNewRoomId}));
+                // history("/room/"+tempNewRoomId);
+                // setPlayerRole(1);
+                // setRoomId(tempNewRoomId);
+                // setStartRematch(true);
+            }}
+            >
+            Go Again
+        </button>
+        {/* {startRematch &&
+            <Game2 
+                gridSize={props.gridSize}
+                roomId={roomId}
+                socketId={socket.id}
+                playerRole={playerRole}
+            />
+        } */}
     </>
   )
 }

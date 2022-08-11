@@ -651,15 +651,17 @@ export default function Game(props) {
   }, []);
 
   function notTurnFunc(){
-    toast("It's not your turn", {
-      position: "top-right",
-      autoClose: 1000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-    }); 
+    if(gridRef.current.className==="show-grid"){
+      toast("It's not your turn", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      }); 
+    }
   }
 
   // const yourTurnToastId = useRef(null);
@@ -741,7 +743,7 @@ export default function Game(props) {
       // console.log(gridRef.current.className);
       if(!props.vsComp && gridRef.current.className === "show-grid"){
         socket.on("game-left", ({winner})=>{
-          console.log("The other player left the game");
+          // console.log("The other player left the game");
           setPlayerLeft(true);
           setGameOver(true);
           setGameLeaveWinner(winner);
@@ -757,6 +759,7 @@ export default function Game(props) {
     // }, [playerLeft])
 
     useEffect(()=>{
+      console.log(gridRef.current.className);
       if(!props.vsComp && !playerLeft && gridRef.current.className==="show-grid"){
         var tempRoomId = finalRoomId;
         if(!playerLeft){
@@ -834,7 +837,7 @@ export default function Game(props) {
         </div>
 
         <div className={!gameOver?"hide-game-over":"show-game-over"}>
-          <GameOver gameLeaveWinner={gameLeaveWinner} redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap} vsComp={props.vsComp} gameOver={gameOver}/>
+          <GameOver gameLeaveWinner={gameLeaveWinner} redScore={redScore} blueScore={blueScore} gridSize={props.gridSize} boxMap={boxMap} vsComp={props.vsComp} gameOver={gameOver} curRoomId={finalRoomId}/>
         </div>
         {/* {console.log(turn)} */}
         <div className={!gameOver?"score-container":"hide-score-container"}>

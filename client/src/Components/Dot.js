@@ -55,7 +55,7 @@ export default function Dot(props) {
         elRef.current.style.transition = "all 0.3s ease"
         elRef.current.style.transform = "scale(1.2)"
         // elRef.current.style.backgroundColor = "#ffac00 !important"
-        console.log(elRef.current)
+        // console.log(elRef.current)
       }
       setTimeout(()=>{
         if(props.elementId==props.movesArr[props.movesArr.length-1]){
