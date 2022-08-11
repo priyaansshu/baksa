@@ -14,8 +14,8 @@ import {Route, Link, Routes, Navigate, useNavigate} from "react-router-dom";
 import { useBeforeunload } from 'react-beforeunload';
 import useScreenType from "react-screentype-hook";
 
-// const socket = io('https://baksa19.herokuapp.com/', { transports : ['websocket'] });
-const socket = io('http://localhost:4000');
+const socket = io('https://baksa19.herokuapp.com/', { transports : ['websocket'] });
+// const socket = io('http://localhost:4000');
 
 export default function Game(props) {
   var i, j;
