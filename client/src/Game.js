@@ -403,7 +403,7 @@ export default function Game(props) {
       }
     }
 
-    if(props.playerRole==1){
+    if(props.playerRole==1 || props.vsComp){
       if(props.gridSize == 4){
         if(tempBoxCount == 16){
           // console.log(boxMap);
@@ -430,8 +430,6 @@ export default function Game(props) {
         }
       }    
     }
-
-    // console.log(boxMap);
   }
 
   // function compCheckVerticalBoxes(id, elRef){
@@ -869,22 +867,6 @@ export default function Game(props) {
       }
     }, [showLastMove])
 
-    // useEffect(()=>{
-    //   if(props.playerRole==2){
-    //     console.log("here1")
-    //     if(props.gridSize == 4){
-    //       if(tempBoxCount == 1){
-    //         setGameOver(true);
-    //         console.log("here2")
-    //       }
-    //     }
-    //     else if(props.gridSize == 8){
-    //       if(tempBoxCount == 64){
-    //         setGameOver(true);
-    //       }
-    //     }    
-    //   }
-    // }, [socket, boxMap])
 
   return (
     <>
